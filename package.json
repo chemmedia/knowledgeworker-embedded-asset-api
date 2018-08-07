@@ -1,0 +1,17 @@
+{
+  "name": "knowledgeworker-embedded-asset-api",
+  "version": "1.0.0",
+  "author": "chemmedia AG",
+  "description": "An javascript interface to integrate rich content packages into responsive KnowledgeWorker contents.",
+  "keywords": [
+    "knowledgeworker"
+  ],
+  "homepage": "https://knowledgeworker.com",
+  "bugs": "https://github.com/chemmedia/knowledgeworker-embedded-asset-api/issues",
+  "license": "LGPL-3.0",
+  "main": "index.js",
+  "repository" : {
+    "type": "git",
+    "url": "https://github.com/chemmedia/knowledgeworker-embedded-asset-api.git"
+  }
+}
