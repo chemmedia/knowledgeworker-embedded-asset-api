@@ -22,7 +22,7 @@ exports.setHeight = (height) => {
     }
 };
 
-exports.setOnInteractionComplete = (complete) => {
+const setCompletion = (complete) => {
     const config = getConfig();
     if (config && config.token && config.origin && window.parent) {
         window.parent.postMessage(
@@ -34,5 +34,13 @@ exports.setOnInteractionComplete = (complete) => {
             config.origin
         );
     }
+};
+
+exports.disableAutomaticCompletion = () => {
+    setCompletion(false);
+};
+
+exports.triggerCompleted = () => {
+    setCompletion(true);
 };
 
