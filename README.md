@@ -41,8 +41,8 @@ setHeight(500);
 Tell KnowledgeWorker runtime to display the embedded asset with a given height.
 
 Embedded assets are currently integrated as an [iframe tag](https://www.w3schools.com/tags/tag_iframe.asp). The width of 
-this iframe is automatically adjusted by KnowledgeWorker to the display space available in respect to device screen 
-screen size and surrounding content elements. The height is derived from the dynamic width according to the initial 
+this iframe is automatically adjusted by KnowledgeWorker to the display space available in respect to device screen size 
+and surrounding content elements. The height is derived from the dynamic width according to the initial 
 aspect ratio configured by maximum width and height in KnowledgeWorker media asset editor. This however does not fit any 
 content display situation or dynamic contents and in these circumstances you may want to explicitly set the height of 
 your embedded assets.
