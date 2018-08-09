@@ -4,47 +4,41 @@ A javascript client to integrate rich content packages into responsive
 [KnowledgeWorker](https://www.knowledgeworker.com/?utm_source=code&utm_campaign=embedded-asset-api) contents.
 
 By embedding rich HTML5 assets into KnowledgeWorker contents, authors of content marketing or digital learning are 
-creating immersive web experiences. This API client enables embedded content to communicate with the KnowledgeWorker 
-runtime to integrate smoothly into responsive environments.
+able to create immersive web experiences. This API client allows embedded content to communicate with the KnowledgeWorker runtime to integrate smoothly into responsive environments.
 
 ## Getting Started
 
-These instruction will guide you through the process of integrating the KnowledgeWorker Embedded Asset API into your web 
-projects.
+These instructions will guide you through the process of integrating the KnowledgeWorker Embedded Asset API into your web projects.
 
 ### Prerequisites
 
-This API library is written in ES6. To start you should have set up an appropriate build environment such as 
-[webpack](https://webpack.js.org/) for your project. If you are starting from scratch, consider having a look at the 
+This API library is written in ES6. To start, you should have an appropriate build environment such as 
+[webpack](https://webpack.js.org/) set up for your project. If you are starting from scratch, have a look at the 
 [boilerplate](https://github.com/chemmedia/knowledgeworker-embedded-asset-api-boilerplate).
 
 ### Install
 
-To install the api library use your preferred package manager
+To install the API library, use your preferred package manager, e.g.
 
     $ yarn add knowledgeworker-embedded-asset-api
 
 ## Usage
 
-Having installed the api library into your project you can import it into your source as follows:
+After installing the API library in your project, you can import it into your source as follows:
 
 ```ecmascript 6
 // Import a library component into your code
 import { setHeight } from 'knowledgeworker-embedded-asset-api';
 
-// Tell KnowledgeWorker runtime to display this embedded asset with a height of 500 pixels
+// Tell the KnowledgeWorker runtime to display this embedded asset with a height of 500 pixels
 setHeight(500);
 ```
 
 ### setHeight
 
-Tell KnowledgeWorker runtime to display the embedded asset with a given height.
+Tells KnowledgeWorker to display the embedded asset with the given height.
 
-Embedded assets are currently integrated as an [iframe tag](https://www.w3schools.com/tags/tag_iframe.asp). The width of 
-this iframe is automatically adjusted by KnowledgeWorker to the display space available in respect to device screen size 
-and surrounding content elements. The height is derived from the dynamic width according to the initial 
-aspect ratio configured by maximum width and height in KnowledgeWorker media asset editor. This however does not fit any 
-content display situation or dynamic contents and in these circumstances you may want to explicitly set the height of 
+Embedded assets are currently integrated via an [iframe tag](https://www.w3schools.com/tags/tag_iframe.asp). KnowledgeWorker automatically adjusts the width of this iframe to fit the device screen size as well as surrounding content elements. By default, the height is calculated based on the current width and the initial aspect ratio configured by maximum width and height in the KnowledgeWorker media asset editor. However, this does not suit all content display situations or dynamic contents and in these circumstances you may want to explicitly set the height of 
 your embedded assets.
 
 ```ecmascript 6
@@ -59,17 +53,13 @@ setHeight(350);
 
 ### disableAutomaticCompletion
 
-Tells KnowledgeWorker that this content contains completion relevant interactions or hidden content.
+Tells KnowledgeWorker that this content contains interaction relevant for completion or hidden content.
 
-Simple assets may be seen as completed once they have been displayed to the user, such as images. Many types of assets 
-initially hide parts of their content to reduce cognitive load and to adapt to users individual needs. To measure 
-completion, such hidden contents may have to be taken into account. If your embedded asset contains such contents you 
-will want KnowledgeWorker to leave this assets as incomplete until an event occurs by disabling automatic completion. 
-You should then call ```triggerCompleted``` once the user has completely consumed your embedded assets.
+Simple assets, such as images, may be marked as completed once they have been displayed to the user. Many types of assets initially hide parts of their content to reduce cognitive load and to adapt to users individual needs. To measure completion, such hidden contents may have to be taken into account. If your embedded asset contains such contents, you will want KnowledgeWorker to leave these assets as incomplete until a completion event is triggered by disabling automatic completion. You should then call ```triggerCompleted``` once the user has completely consumed your embedded assets.
 
 Automatic completion is turned on by default and always has to be disabled explicitly to use custom completion.
 
-Automatic completion has to be disabled before the asset finishes it's loading. To safely initialize custom completion 
+Automatic completion has to be disabled before the asset finishes its loading. To safely initialize custom completion, 
 you should do so before the [window load event](https://www.w3schools.com/jsref/event_onload.asp). 
 
 ```ecmascript 6
@@ -87,10 +77,7 @@ disableAutomaticCompletion()
 
 Mark the embedded asset as completed.
 
-If you turned of automatic completion for your asset calling ```disableAutomaticCompletion()```, your asset has to tell 
-Knowledgeworker programmatically when it has been finished by triggering a completion event. Typically this event will 
-occur after the user has read all texts, finished watching animations and videos or completed all interactions in your 
-asset.
+If you turned off automatic completion for your asset by calling ```disableAutomaticCompletion()```, your asset has to tell Knowledgeworker programmatically when it has been finished by triggering a completion event. Typically, this event will occur after the user has read all texts, finished watching animations and videos or completed all interactions in your asset.
 
 ```ecmascript 6
 Type: triggerCompleted(): void;
@@ -99,7 +86,7 @@ Type: triggerCompleted(): void;
 Example:
 
 ```ecmascript 6
-//Finish with the last interaction
+// Finish with the last interaction
 someButton.addEventListener("click", () => triggerCompleted());
 ```
 
