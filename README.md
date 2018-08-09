@@ -53,7 +53,7 @@ setHeight(350);
 
 ### disableAutomaticCompletion
 
-Tells KnowledgeWorker that this content contains interaction relevant for completion or hidden content.
+Tells KnowledgeWorker that this content contains interactions or hidden content relevant for completion.
 
 Simple assets, such as images, may be marked as completed once they have been displayed to the user. Many types of assets initially hide parts of their content to reduce cognitive load and to adapt to users individual needs. To measure completion, such hidden contents may have to be taken into account. If your embedded asset contains such contents, you will want KnowledgeWorker to leave these assets as incomplete until a completion event is triggered by disabling automatic completion. You should then call ```triggerCompleted``` once the user has completely consumed your embedded assets.
 
@@ -69,7 +69,7 @@ Type: disableAutomaticCompletion(): void;
 Example:
 
 ```ecmascript 6
-// before load event
+// Before window load event
 disableAutomaticCompletion()
 ```
 
@@ -86,13 +86,13 @@ Type: triggerCompleted(): void;
 Example:
 
 ```ecmascript 6
-// Finish with the last interaction
+// Mark the asset's interactions as completed
 someButton.addEventListener("click", () => triggerCompleted());
 ```
 
 ## Versioning
 
-We use the [SemVer](http://semver.org/) versioning system. For the versions available, please see the tags on this 
+We use the [SemVer](http://semver.org/) versioning system. For the available versions, please see the tags on this 
 repository.
 
 ## Compatibility
