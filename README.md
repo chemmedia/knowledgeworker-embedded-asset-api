@@ -14,7 +14,7 @@ These instructions will guide you through the process of integrating the Knowled
 
 This API library is written in ES6. To start, you should have an appropriate build environment such as 
 [webpack](https://webpack.js.org/) set up for your project. If you are starting from scratch, have a look at the 
-[boilerplate](https://github.com/chemmedia/knowledgeworker-embedded-asset-api-boilerplate).
+[example](https://github.com/chemmedia/knowledgeworker-embedded-asset-api-example).
 
 ### Install
 
