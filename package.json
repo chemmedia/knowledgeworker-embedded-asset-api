@@ -6,12 +6,23 @@
   "keywords": [
     "knowledgeworker"
   ],
+  "scripts": {
+    "build": "tsc",
+    "prepare": "yarn run build"
+  },
   "homepage": "https://knowledgeworker.com",
   "bugs": "https://github.com/chemmedia/knowledgeworker-embedded-asset-api/issues",
   "license": "LGPL-3.0",
-  "main": "index.js",
-  "repository" : {
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "repository": {
     "type": "git",
     "url": "https://github.com/chemmedia/knowledgeworker-embedded-asset-api.git"
+  },
+  "files": [
+    "lib/**/*"
+  ],
+  "devDependencies": {
+    "typescript": "^4.0.5"
   }
 }
