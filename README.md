@@ -30,7 +30,7 @@ After installing the API library in your project, you can import it into your so
 // Import a library component into your code
 import { setHeight } from 'knowledgeworker-embedded-asset-api';
 
-// Tell the KnowledgeWorker runtime to display this embedded asset with a height of 500 pixels
+// Tell the Knowledgeworker Create runtime to display this embedded asset with a height of 500 pixels
 setHeight(500);
 ```
 
