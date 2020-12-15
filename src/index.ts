@@ -102,23 +102,58 @@ export const setSuspendData = (suspendData: string) => {
     );
 };
 
+export enum PackageType {
+    MEDIUM = 'medium',
+    QUESTION = 'question',
+    QUESTION_WITH_CUSTOM_QUESTION_TEXT = 'question-with-custom-question-text',
+    ADVANCED_QUESTION = 'advanced-question',
+}
+
+export interface Configuration {
+    suspendData: string,
+    packageType: PackageType,
+    isEvaluated: boolean,
+    isInAssessment: boolean,
+    actionColor: string;
+    backgroundColor: string;
+    buttonStyles: string;
+    feedbackNegativeColor: string;
+    feedbackPartialPositiveColor: string;
+    feedbackPositiveColor: string;
+    feedbackSolutionColor: string;
+    fontFaces: string;
+    headlineTextStyles: string;
+    paragraphTextStyles: string;
+    textColor: string;
+}
+
+export interface DesignUpdate {
+    actionColor?: string;
+    backgroundColor?: string;
+    buttonStyles?: string;
+    feedbackNegativeColor?: string;
+    feedbackPartialPositiveColor?: string;
+    feedbackPositiveColor?: string;
+    feedbackSolutionColor?: string;
+    fontFaces?: string;
+    headlineTextStyles?: string;
+    paragraphTextStyles?: string;
+    textColor?: string;
+}
+
 interface Listeners {
-    initialize?: (
-        suspendData: string,
-        packageType: 'medium' | 'question',
-        isEvaluated: boolean,
-        isInAssessment: boolean,
-    ) => void;
+    initialize?: (configuration: Configuration) => void;
     isEvaluated?: (isEvaluated: boolean) => void;
     showCheckAnswerButton?: (show: boolean) => void;
     showRetryButton?: (show: boolean) => void;
     showSolutionButton?: (show: boolean) => void;
-    showResult?: (show: boolean, correct: boolean) => void;
-    showFeedback?: (show: boolean) => void;
-    showAnswerFeedback?: (show: boolean) => void;
-    showSolution?: (show: boolean) => void;
-    deactivate?: (show: boolean) => void;
-    reset?: (show: boolean) => void;
+    showResult?: (correct: boolean) => void;
+    showFeedback?: () => void;
+    showAnswerFeedback?: () => void;
+    showSolution?: () => void;
+    deactivate?: () => void;
+    reset?: () => void;
+    updateDesign?: (update: DesignUpdate) => void;
 }
 
 const listeners: Listeners = {};
@@ -167,6 +202,10 @@ export const onReset = (listener: Listeners['reset']) => {
     listeners.reset = listener;
 };
 
+export const onUpdateDesign = (listener: Listeners['updateDesign']) => {
+    listeners.updateDesign = listener;
+};
+
 const onMessage = (event: MessageEvent) => {
     const config = getConfig();
     const { type, token, ...data } = event.data;
@@ -178,12 +217,7 @@ const onMessage = (event: MessageEvent) => {
 
     console.log(shortType, data);
     switch (shortType) {
-        case 'INITIALIZE': listeners?.initialize?.(
-            data.suspendData,
-            data.packageType,
-            data.isEvaluated,
-            data.isInAssessment,
-        );
+        case 'INITIALIZE': listeners?.initialize?.(data);
             break;
         case 'IS_EVALUATED': listeners?.isEvaluated?.(data.isEvaluated);
             break;
@@ -193,17 +227,19 @@ const onMessage = (event: MessageEvent) => {
             break;
         case 'SHOW_SOLUTION_BUTTON': listeners?.showSolutionButton?.(data.show);
             break;
-        case 'SHOW_RESULT': listeners?.showResult?.(data.show, data.correct);
+        case 'SHOW_RESULT': listeners?.showResult?.(data.correct);
             break;
-        case 'SHOW_FEEDBACK': listeners?.showFeedback?.(data.show);
+        case 'SHOW_FEEDBACK': listeners?.showFeedback?.();
             break;
-        case 'SHOW_ANSWER_FEEDBACK': listeners?.showAnswerFeedback?.(data.show);
+        case 'SHOW_ANSWER_FEEDBACK': listeners?.showAnswerFeedback?.();
             break;
-        case 'SHOW_SOLUTION': listeners?.showSolution?.(data.show);
+        case 'SHOW_SOLUTION': listeners?.showSolution?.();
             break;
-        case 'DEACTIVATE': listeners?.deactivate?.(data.show);
+        case 'DEACTIVATE': listeners?.deactivate?.();
             break;
-        case 'RESET': listeners?.reset?.(data.show);
+        case 'RESET': listeners?.reset?.();
+            break;
+        case 'UPDATE_DESIGN': listeners?.updateDesign?.(data);
             break;
     }
 };
