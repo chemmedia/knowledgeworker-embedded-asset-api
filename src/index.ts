@@ -239,7 +239,7 @@ const onMessage = (event: MessageEvent) => {
             break;
         case 'RESET': listeners?.reset?.();
             break;
-        case 'UPDATE_DESIGN': listeners?.updateDesign?.(data);
+        case 'UPDATE_DESIGN': listeners?.updateDesign?.(data.update);
             break;
     }
 };
