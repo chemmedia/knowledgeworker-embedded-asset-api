@@ -1,106 +1,30 @@
-import { typeCheck } from 'type-check';
-
 interface Config {
     token: string;
     origin: string;
 }
 
-const getConfig = (): Config | undefined => {
-    let config: Partial<Config> = {};
-
-    try {
-        config = JSON.parse(window.name);
-    } catch (e) {}
-
-    if (!config?.token || !config?.origin) {
-        return undefined;
-    }
-
-    return config as Config;
-};
-
-const sendMessage = (type: string, data?: {}) => {
-    const config = getConfig();
-    if (config?.token && config?.origin && window.parent) {
-        console.log(`KW_PACKAGE_${type}`, data);
-        window.parent.postMessage(
-            {
-                type: `KW_PACKAGE_${type}`,
-                token: config.token,
-                ...data
-            },
-            config.origin
-        );
-    }
+enum PackageAction {
+    SET_HEIGHT = 'KW_PACKAGE_SET_HEIGHT',
+    SET_COMPLETE = 'KW_PACKAGE_SET_COMPLETE',
+    READY = 'KW_PACKAGE_READY',
+    ANSWERED = 'KW_PACKAGE_ANSWERED',
+    CHECK_ANSWER_BUTTON_CLICKED = 'KW_PACKAGE_CHECK_ANSWER_BUTTON_CLICKED',
+    SOLUTION_BUTTON_CLICKED = 'KW_PACKAGE_SOLUTION_BUTTON_CLICKED',
+    RETRY_BUTTON_CLICKED = 'KW_PACKAGE_RETRY_BUTTON_CLICKED',
+    SUSPEND_DATA = 'KW_PACKAGE_SUSPEND_DATA',
+    INITIALIZE = 'KW_PACKAGE_INITIALIZE',
+    IS_EVALUATED = 'KW_PACKAGE_IS_EVALUATED',
+    SHOW_CHECK_ANSWER_BUTTON = 'KW_PACKAGE_SHOW_CHECK_ANSWER_BUTTON',
+    SHOW_RESULT = 'KW_PACKAGE_SHOW_RESULT',
+    SHOW_FEEDBACK = 'KW_PACKAGE_SHOW_FEEDBACK',
+    SHOW_ANSWER_FEEDBACK = 'KW_PACKAGE_SHOW_ANSWER_FEEDBACK',
+    SHOW_RETRY_BUTTON = 'KW_PACKAGE_SHOW_RETRY_BUTTON',
+    SHOW_SOLUTION_BUTTON = 'KW_PACKAGE_SHOW_SOLUTION_BUTTON',
+    SHOW_SOLUTION = 'KW_PACKAGE_SHOW_SOLUTION',
+    UPDATE_DESIGN = 'KW_PACKAGE_UPDATE_DESIGN',
+    DEACTIVATE = 'KW_PACKAGE_DEACTIVATE',
+    RESET = 'KW_PACKAGE_RESET',
 }
-
-export const setHeight = (height: number) => {
-    if (!typeCheck('Number', height) || height <= 0) {
-        throw Error('Height should be a positive number!');
-    }
-
-    sendMessage(
-        'SET_HEIGHT',
-        {
-            height
-        }
-    );
-};
-
-const setCompletion = (complete: boolean) => sendMessage(
-    'SET_COMPLETE',
-    {
-        complete
-    }
-);
-
-export const disableAutomaticCompletion = () => setCompletion(false);
-
-export const triggerCompleted = () => setCompletion(true);
-
-export const ready = () => sendMessage('READY');
-
-export const answered = (answer: string | undefined, passed: boolean, score: number) => {
-    if (!typeCheck('String | Undefined', answer)) {
-        throw Error('Answer should be a string or undefined!');
-    }
-
-    if (!typeCheck('Boolean', passed)) {
-        throw Error('Passed should be a boolean!');
-    }
-
-    if (!typeCheck('Number', score) || score < 0 || score > 1) {
-        throw Error('Score should be a number between 0 and 1!');
-    }
-
-    sendMessage(
-        'ANSWERED',
-        {
-            answer,
-            passed,
-            score
-        }
-    );
-};
-
-export const checkAnswerButtonClicked = () => sendMessage('CHECK_ANSWER_BUTTON_CLICKED');
-
-export const solutionButtonClicked = () => sendMessage('SOLUTION_BUTTON_CLICKED');
-
-export const retryButtonClicked = () => sendMessage('RETRY_BUTTON_CLICKED');
-
-export const setSuspendData = (suspendData: string) => {
-    if (!typeCheck('String', suspendData)) {
-        throw Error('SuspendData should be a string!');
-    }
-
-    sendMessage(
-        'SUSPEND_DATA',
-        {
-            suspendData
-        }
-    );
-};
 
 export enum PackageType {
     MEDIUM = 'medium',
@@ -124,7 +48,6 @@ export interface Configuration {
     fontFaces: string;
     headlineTextStyles: string;
     paragraphTextStyles: string;
-    textColor: string;
 }
 
 export interface DesignUpdate {
@@ -156,90 +79,129 @@ interface Listeners {
     updateDesign?: (update: DesignUpdate) => void;
 }
 
+const getConfig = (): Config | undefined => {
+    let config: Partial<Config> = {};
+
+    try {
+        config = JSON.parse(window.name);
+    } catch (e) {}
+
+    if (!config?.token || !config?.origin) {
+        return undefined;
+    }
+
+    return config as Config;
+};
+
+const sendMessage = (type: PackageAction, data?: {}) => {
+    const config = getConfig();
+    if (config?.token && config?.origin && window.parent) {
+        console.log(type, data);
+        window.parent.postMessage(
+            {
+                type,
+                token: config.token,
+                ...data
+            },
+            config.origin
+        );
+    }
+}
+
+export const setHeight = (height: number) => {
+    if (typeof height !== 'number' || isNaN(height) || height <= 0) {
+        throw Error('Height should be a positive number!');
+    }
+
+    sendMessage(PackageAction.SET_HEIGHT, { height });
+};
+
+const setCompletion = (complete: boolean) => sendMessage(PackageAction.SET_COMPLETE, { complete });
+
+export const disableAutomaticCompletion = () => setCompletion(false);
+
+export const triggerCompleted = () => setCompletion(true);
+
+export const ready = () => sendMessage(PackageAction.READY);
+
+export const answered = (answer: string | undefined, passed: boolean, score: number) => {
+    if (typeof answer !== 'string' && typeof answer !== 'undefined') {
+        throw Error('Answer should be a string or undefined!');
+    }
+
+    if (typeof passed !== 'boolean') {
+        throw Error('Passed should be a boolean!');
+    }
+
+    if (typeof score !== 'number' || isNaN(score) || score < 0 || score > 1) {
+        throw Error('Score should be a number between 0 and 1!');
+    }
+
+    sendMessage(PackageAction.ANSWERED, { answer, passed, score });
+};
+
+export const checkAnswerButtonClicked = () => sendMessage(PackageAction.CHECK_ANSWER_BUTTON_CLICKED);
+
+export const solutionButtonClicked = () => sendMessage(PackageAction.SOLUTION_BUTTON_CLICKED);
+
+export const retryButtonClicked = () => sendMessage(PackageAction.RETRY_BUTTON_CLICKED);
+
+export const setSuspendData = (suspendData: string) => {
+    if (typeof suspendData !== 'string') {
+        throw Error('SuspendData should be a string!');
+    }
+
+    sendMessage(PackageAction.SUSPEND_DATA, { suspendData });
+};
+
 const listeners: Listeners = {};
 
-export const onInitialize = (listener: Listeners['initialize']) => {
-  listeners.initialize = listener;
-};
-
-export const onIsEvaluated = (listener: Listeners['isEvaluated']) => {
-    listeners.isEvaluated = listener;
-};
-
-export const onShowCheckAnswerButton = (listener: Listeners['showCheckAnswerButton']) => {
-    listeners.showCheckAnswerButton = listener;
-};
-
-export const onShowRetryButton = (listener: Listeners['showRetryButton']) => {
-    listeners.showRetryButton = listener;
-};
-
-export const onShowSolutionButton = (listener: Listeners['showSolutionButton']) => {
-    listeners.showSolutionButton = listener;
-};
-
-export const onShowResult = (listener: Listeners['showResult']) => {
-    listeners.showResult = listener;
-};
-
-export const onShowFeedback = (listener: Listeners['showFeedback']) => {
-    listeners.showFeedback = listener;
-};
-
-export const onShowAnswerFeedback = (listener: Listeners['showAnswerFeedback']) => {
-    listeners.showAnswerFeedback = listener;
-};
-
-export const onShowSolution = (listener: Listeners['showSolution']) => {
-    listeners.showSolution = listener;
-};
-
-export const onDeactivate = (listener: Listeners['deactivate']) => {
-    listeners.deactivate = listener;
-};
-
-export const onReset = (listener: Listeners['reset']) => {
-    listeners.reset = listener;
-};
-
-export const onUpdateDesign = (listener: Listeners['updateDesign']) => {
-    listeners.updateDesign = listener;
-};
+export const onInitialize = (listener: Listeners['initialize']) => listeners.initialize = listener;
+export const onIsEvaluated = (listener: Listeners['isEvaluated']) => listeners.isEvaluated = listener;
+export const onShowCheckAnswerButton = (listener: Listeners['showCheckAnswerButton']) => listeners.showCheckAnswerButton = listener;
+export const onShowRetryButton = (listener: Listeners['showRetryButton']) => listeners.showRetryButton = listener;
+export const onShowSolutionButton = (listener: Listeners['showSolutionButton']) => listeners.showSolutionButton = listener;
+export const onShowResult = (listener: Listeners['showResult']) => listeners.showResult = listener;
+export const onShowFeedback = (listener: Listeners['showFeedback']) => listeners.showFeedback = listener;
+export const onShowAnswerFeedback = (listener: Listeners['showAnswerFeedback']) => listeners.showAnswerFeedback = listener;
+export const onShowSolution = (listener: Listeners['showSolution']) => listeners.showSolution = listener;
+export const onDeactivate = (listener: Listeners['deactivate']) => listeners.deactivate = listener;
+export const onReset = (listener: Listeners['reset']) => listeners.reset = listener;
+export const onUpdateDesign = (listener: Listeners['updateDesign']) => listeners.updateDesign = listener;
 
 const onMessage = (event: MessageEvent) => {
     const config = getConfig();
     const { type, token, ...data } = event.data;
-    const shortType = type.match(new RegExp('^(?:KW_PACKAGE_)(.*)'))?.[1];
 
-    if (token !== config?.token || !shortType) {
+    if (token !== config?.token) {
         return;
     }
 
-    console.log(shortType, data);
-    switch (shortType) {
-        case 'INITIALIZE': listeners?.initialize?.(data);
+    console.log(type, data);
+    switch (type) {
+        case PackageAction.INITIALIZE: listeners?.initialize?.(data);
             break;
-        case 'IS_EVALUATED': listeners?.isEvaluated?.(data.isEvaluated);
+        case PackageAction.IS_EVALUATED: listeners?.isEvaluated?.(data.isEvaluated);
             break;
-        case 'SHOW_CHECK_ANSWER_BUTTON': listeners?.showCheckAnswerButton?.(data.show);
+        case PackageAction.SHOW_CHECK_ANSWER_BUTTON: listeners?.showCheckAnswerButton?.(data.show);
             break;
-        case 'SHOW_RETRY_BUTTON': listeners?.showRetryButton?.(data.show);
+        case PackageAction.SHOW_RETRY_BUTTON: listeners?.showRetryButton?.(data.show);
             break;
-        case 'SHOW_SOLUTION_BUTTON': listeners?.showSolutionButton?.(data.show);
+        case PackageAction.SHOW_SOLUTION_BUTTON: listeners?.showSolutionButton?.(data.show);
             break;
-        case 'SHOW_RESULT': listeners?.showResult?.(data.correct);
+        case PackageAction.SHOW_RESULT: listeners?.showResult?.(data.correct);
             break;
-        case 'SHOW_FEEDBACK': listeners?.showFeedback?.();
+        case PackageAction.SHOW_FEEDBACK: listeners?.showFeedback?.();
             break;
-        case 'SHOW_ANSWER_FEEDBACK': listeners?.showAnswerFeedback?.();
+        case PackageAction.SHOW_ANSWER_FEEDBACK: listeners?.showAnswerFeedback?.();
             break;
-        case 'SHOW_SOLUTION': listeners?.showSolution?.();
+        case PackageAction.SHOW_SOLUTION: listeners?.showSolution?.();
             break;
-        case 'DEACTIVATE': listeners?.deactivate?.();
+        case PackageAction.DEACTIVATE: listeners?.deactivate?.();
             break;
-        case 'RESET': listeners?.reset?.();
+        case PackageAction.RESET: listeners?.reset?.();
             break;
-        case 'UPDATE_DESIGN': listeners?.updateDesign?.(data.update);
+        case PackageAction.UPDATE_DESIGN: listeners?.updateDesign?.(data.update);
             break;
     }
 };

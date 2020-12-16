@@ -25,8 +25,5 @@
   "devDependencies": {
     "typescript": "^4.0.5"
   },
-  "dependencies": {
-    "@types/type-check": "^0.3.27",
-    "type-check": "^0.4.0"
-  }
+  "dependencies": {}
 }
