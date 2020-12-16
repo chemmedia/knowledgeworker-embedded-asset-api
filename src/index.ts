@@ -3,7 +3,7 @@ interface Config {
     origin: string;
 }
 
-enum PackageAction {
+export enum PackageAction {
     SET_HEIGHT = 'KW_PACKAGE_SET_HEIGHT',
     SET_COMPLETE = 'KW_PACKAGE_SET_COMPLETE',
     READY = 'KW_PACKAGE_READY',
@@ -96,7 +96,6 @@ const getConfig = (): Config | undefined => {
 const sendMessage = (type: PackageAction, data?: {}) => {
     const config = getConfig();
     if (config?.token && config?.origin && window.parent) {
-        console.log(type, data);
         window.parent.postMessage(
             {
                 type,
@@ -177,7 +176,6 @@ const onMessage = (event: MessageEvent) => {
         return;
     }
 
-    console.log(type, data);
     switch (type) {
         case PackageAction.INITIALIZE: listeners?.initialize?.(data);
             break;
