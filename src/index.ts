@@ -61,7 +61,6 @@ export interface DesignUpdate {
     fontFaces?: string;
     headlineTextStyles?: string;
     paragraphTextStyles?: string;
-    textColor?: string;
 }
 
 interface Listeners {
