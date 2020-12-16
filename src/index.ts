@@ -24,6 +24,7 @@ export enum PackageAction {
     UPDATE_DESIGN = 'KW_PACKAGE_UPDATE_DESIGN',
     DEACTIVATE = 'KW_PACKAGE_DEACTIVATE',
     RESET = 'KW_PACKAGE_RESET',
+    CUSTOM = 'KW_PACKAGE_CUSTOM',
 }
 
 export enum PackageType {
@@ -114,14 +115,6 @@ export const setHeight = (height: number) => {
     sendMessage(PackageAction.SET_HEIGHT, { height });
 };
 
-const setCompletion = (complete: boolean) => sendMessage(PackageAction.SET_COMPLETE, { complete });
-
-export const disableAutomaticCompletion = () => setCompletion(false);
-
-export const triggerCompleted = () => setCompletion(true);
-
-export const ready = () => sendMessage(PackageAction.READY);
-
 export const answered = (answer: string | undefined, passed: boolean, score: number) => {
     if (typeof answer !== 'string' && typeof answer !== 'undefined') {
         throw Error('Answer should be a string or undefined!');
@@ -138,12 +131,6 @@ export const answered = (answer: string | undefined, passed: boolean, score: num
     sendMessage(PackageAction.ANSWERED, { answer, passed, score });
 };
 
-export const checkAnswerButtonClicked = () => sendMessage(PackageAction.CHECK_ANSWER_BUTTON_CLICKED);
-
-export const solutionButtonClicked = () => sendMessage(PackageAction.SOLUTION_BUTTON_CLICKED);
-
-export const retryButtonClicked = () => sendMessage(PackageAction.RETRY_BUTTON_CLICKED);
-
 export const setSuspendData = (suspendData: string) => {
     if (typeof suspendData !== 'string') {
         throw Error('SuspendData should be a string!');
@@ -151,6 +138,17 @@ export const setSuspendData = (suspendData: string) => {
 
     sendMessage(PackageAction.SUSPEND_DATA, { suspendData });
 };
+
+const setCompletion = (complete: boolean) => sendMessage(PackageAction.SET_COMPLETE, { complete });
+
+export const disableAutomaticCompletion = () => setCompletion(false);
+export const triggerCompleted = () => setCompletion(true);
+export const ready = () => sendMessage(PackageAction.READY);
+export const checkAnswerButtonClicked = () => sendMessage(PackageAction.CHECK_ANSWER_BUTTON_CLICKED);
+export const solutionButtonClicked = () => sendMessage(PackageAction.SOLUTION_BUTTON_CLICKED);
+export const retryButtonClicked = () => sendMessage(PackageAction.RETRY_BUTTON_CLICKED);
+export const custom = (data: any) => sendMessage(PackageAction.CUSTOM, data);
+
 
 const listeners: Listeners = {};
 
