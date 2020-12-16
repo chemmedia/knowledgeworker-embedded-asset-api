@@ -8,7 +8,6 @@
   ],
   "scripts": {
     "build": "tsc",
-    "postinstall": "yarn run build",
     "prepare": "yarn run build"
   },
   "homepage": "https://knowledgeworker.com",
