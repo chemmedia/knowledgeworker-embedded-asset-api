@@ -12,9 +12,9 @@ These instructions will guide you through the process of integrating the Knowled
 
 ### Prerequisites
 
-This API library is written in ES6. To start, you should have an appropriate build environment such as 
-[webpack](https://webpack.js.org/) set up for your project. If you are starting from scratch, have a look at the 
-[example](https://github.com/chemmedia/knowledgeworker-embedded-asset-api-example).
+If you are starting from scratch, we highly recomment to fork one of our examples: 
+* [Example Medium Repository](https://github.com/chemmedia/knowledgeworker-embedded-asset-api-example)
+* [Example Question Repository](https://github.com/chemmedia/knowledgeworker-embedded-asset-api-question-example)
 
 ### Install
 
@@ -24,71 +24,319 @@ To install the API library, use your preferred package manager, e.g.
 
 ## Usage
 
-After installing the API library in your project, you can import it into your source as follows:
+After installing the API library in your project, you can import actions and handlers into your source as follows:
 
 ```ecmascript 6
-// Import a library component into your code
+// Import a library action or handler into your code
 import { setHeight } from 'knowledgeworker-embedded-asset-api';
 
 // Tell the Knowledgeworker Create runtime to display this embedded asset with a height of 500 pixels
 setHeight(500);
 ```
+## Initialization
 
-### setHeight
+Once your package is ready to communicate with the Knowledgeworker Create runtime you have to tell the API you are ready.
+This action must be triggered within a time frame of 1000ms after the [window load event](https://www.w3schools.com/jsref/event_onload.asp). If no action is send within this time, Knowledgeworker Create assumes that the package does not contain any interactions or hidden content relevant for completion and marks it as completed.
+
+```ecmascript 6
+// Import a library component into your code
+import { ready, onInitialize } from 'knowledgeworker-embedded-asset-api';
+
+onInitialize((configuration) => {
+    // may use `suspendData` from `configuration` to restore your asset in the last state
+});
+
+// Tells the Knowledgeworker Create that the embedded asset is ready to handle events.
+ready();
+```
+
+## Actions
+### `ready(): void`
+Tells the Knowledgeworker Create that the embedded asset is ready to handle events.
+
+### `setHeight(height: number): void`
 
 Tells Knowledgeworker Create to display the embedded asset with the given height.
 
 Embedded assets are currently integrated via an [iframe tag](https://www.w3schools.com/tags/tag_iframe.asp). Knowledgeworker Create automatically adjusts the width of this iframe to fit the device screen size as well as surrounding content elements. By default, the height is calculated based on the current width and the initial aspect ratio configured by maximum width and height in the Knowledgeworker Create media asset editor. However, this does not suit all content display situations or dynamic contents and in these circumstances you may want to explicitly set the height of 
 your embedded assets.
 
-```ecmascript 6
-Type: setHeight(height: number): void
-```
-
 Example:
 ```ecmascript 6
+import { setHeight } from 'knowledgeworker-embedded-asset-api';
+
 // Display this embedded asset with a height of 350 pixels
 setHeight(350);
 ```
 
-### disableAutomaticCompletion
-
-Tells Knowledgeworker Create that this content contains interactions or hidden content relevant for completion.
-
-Simple assets, such as images, may be marked as completed once they have been displayed to the user. Many types of assets initially hide parts of their content to reduce cognitive load and to adapt to users individual needs. To measure completion, such hidden contents may have to be taken into account. If your embedded asset contains such contents, you will want Knowledgeworker Create to leave these assets as incomplete until a completion event is triggered by disabling automatic completion. You should then call ```triggerCompleted``` once the user has completely consumed your embedded assets.
-
-Automatic completion is turned on by default and always has to be disabled explicitly to use custom completion.
-
-Automatic completion has to be disabled before the asset finishes its loading. To safely initialize custom completion, 
-you should do so before the [window load event](https://www.w3schools.com/jsref/event_onload.asp). 
-
-```ecmascript 6
-Type: disableAutomaticCompletion(): void;
-```
+### `setSuspendData(suspendData: string): void`
+Use the supendData to store the state, e.g. given answers, of the asset. This suspendData is made available again when the asset is restarted in the `onInitialize` handler.
+Keep in mind that in various eLearning communication standards the amount of data that can be stored is extremely limited. So reduce the stored data to the most necessary.
 
 Example:
 
 ```ecmascript 6
-// Before window load event
-disableAutomaticCompletion()
+import { setSupendData } from 'knowledgeworker-embedded-asset-api';
+
+// save suspendData each time a button is clicked
+someButton.addEventListener("click", () => {
+    setSupendData('szene1');
+});
 ```
 
-### triggerCompleted
-
-Mark the embedded asset as completed.
-
-If you turned off automatic completion for your asset by calling ```disableAutomaticCompletion()```, your asset has to tell Knowledgeworker Create programmatically when it has been finished by triggering a completion event. Typically, this event will occur after the user has read all texts, finished watching animations and videos or completed all interactions in your asset.
-
-```ecmascript 6
-Type: triggerCompleted(): void;
-```
+### `setSharedData(sharedData: string): void`
+Shared Data is used to exchange data between different assets within a Knowledgeworker Create course. This data can be written and received by all assets and is made available again when the asset is restarted in the `onInitialize` handler and each time it changes in the `onSharedDataChange` handler.
+Keep in mind that in various eLearning communication standards the amount of data that can be stored is extremely limited. So reduce the stored data to the most necessary.
 
 Example:
 
 ```ecmascript 6
-// Mark the asset's interactions as completed
-someButton.addEventListener("click", () => triggerCompleted());
+import { setSharedData } from 'knowledgeworker-embedded-asset-api';
+
+// save sharedData each time a button is clicked
+someButton.addEventListener("click", () => {
+    setSharedData(JSON.stringify({ badges: ['hero'] }));
+});
 ```
+
+### `completed(): void`
+This action is only for assets of type `medium` and not needed by question assets.
+
+Simple assets, such as images, may be marked as completed once they have been displayed to the user. Many types of assets initially hide parts of their content to reduce cognitive load and to adapt to users individual needs. To measure completion, such hidden contents may have to be taken into account. When all relevant content has been viewed, the asset must trigger the `complete()` action.
+Typically, this event will occur after the user has read all texts, finished watching animations and videos or completed all interactions in your asset.
+
+Example:
+
+```ecmascript 6
+import { complete } from 'knowledgeworker-embedded-asset-api';
+
+// Mark the asset as completed
+somePopup.addEventListener("click", () => complete());
+```
+
+### `answered(answer: string | undefined, passed: boolean, score: number): void`
+This action is only for assets of type `question`, `question-with-custom-question-text` and `advanced-question`.
+
+This action should be triggered every time the user submits or revokes a answer. If the answer is a `string, the question is marked as evaluable.
+
+* `answer` 
+    * `undefined` if there is now answer yet or the answer is reverted by the user
+    * a `string` of the user selected answer(s), used for tracking e.g. in SCORM or xAPI.
+* `passed` define if the question ist passed with the previous given answer
+* `score` score from 0 to 1 reached by the user
+
+Example:
+
+```ecmascript 6
+import { answered } from 'knowledgeworker-embedded-asset-api';
+
+// store answer each time a button is clicked
+someButton.addEventListener("click", () => {
+    answered('my answer', true, 1);
+});
+````
+
+### `checkAnswerButtonClicked(): void`
+### `solutionButtonClicked(): void`
+### `retryButtonClicked(): void`
+This action is only for assets of type `advanced-question`.
+Advanced question assets automatically provide buttons for "Check answer", "Retry" and "Show solution" when needed. When these are clicked, the API must be informed.
+
+Example:
+
+```ecmascript 6
+import { checkAnswerButton } from 'knowledgeworker-embedded-asset-api';
+
+// notify that the checkAnswer button was clicked
+checkAnswerButton.addEventListener("click", () => checkAnswerButtonClicked());
+```
+
+## Handlers
+### `onInitialize(configuration: Configuration): void`
+Is triggered directly after the `ready` action and provides the asset with the necessary information to initialise itself.
+
+Types:
+```
+enum AssetType {
+    MEDIUM = 'medium',
+    QUESTION = 'question',
+    QUESTION_WITH_CUSTOM_QUESTION_TEXT = 'question-with-custom-question-text',
+    ADVANCED_QUESTION = 'advanced-question',
+}
+
+interface Configuration {
+    suspendData: string,
+    sharedData: string,
+    assetType: AssetType,
+    isEvaluated: boolean,
+    actionColor: string;
+    backgroundColor: string;
+    buttonStyles: string; // experimental, could change in release
+    feedbackNegativeColor: string;
+    feedbackPartialPositiveColor: string;
+    feedbackPositiveColor: string;
+    feedbackSolutionColor: string;
+    fontFaces: string; // experimental, could change in release
+    headlineTextStyles: string; // experimental, could change in release
+    paragraphTextStyles: string; // experimental, could change in release
+}
+```
+
+Example:
+```ecmascript 6
+// Import a library component into your code
+import { ready, onInitialize } from 'knowledgeworker-embedded-asset-api';
+
+onInitialize(configuration => {
+    // may use `suspendData` from `configuration` to restore your asset in the last state
+});
+
+// Tells the Knowledgeworker Create that the embedded asset is ready to handle events.
+ready();
+```
+
+### `onIsEvaluatedChange(isEvaluated: boolean): void`
+This handler is only for assets of type `question`, `question-with-custom-question-text` and `advanced-question`.
+Tells the embedded asset that the setting is changed weather the asset is evaluated or not on runtime. For comparison, the initial value is supplied in `onInitialze`.
+
+Example:
+```ecmascript 6
+import { onIsEvaluatedChange } from 'knowledgeworker-embedded-asset-api';
+
+// Handle if changed weather the asset is evaluated or not
+onIsEvaluatedChange(isEvaluated => {
+    // update something
+});
+```
+
+### `onDesignChange(update: DesignUpdate): void`
+Tells the embedded asset that there is an update of design params. For comparison, the initial value is supplied in `onInitialze`.
+Only the changed params are supplied,
+
+Types:
+```
+interface DesignUpdate {
+    actionColor?: string;
+    backgroundColor?: string;
+    buttonStyles?: string; // experimental, could change in release
+    feedbackNegativeColor?: string;
+    feedbackPartialPositiveColor?: string;
+    feedbackPositiveColor?: string;
+    feedbackSolutionColor?: string;
+    fontFaces?: string; // experimental, could change in release
+    headlineTextStyles?: string; // experimental, could change in release
+    paragraphTextStyles?: string; // experimental, could change in release
+}
+```
+
+Example:
+```ecmascript 6
+import { onDesignChange } from 'knowledgeworker-embedded-asset-api';
+
+// Handle design changes
+onDesignChange(update => {
+    if (update.actionColor) {
+        // change action color    
+    }
+});
+```
+
+### `onSharedDataChange(sharedData: string): void`
+Tells the embedded asset that the shared data string changed. For comparison, the initial value is supplied in `onInitialze`.
+
+Example:
+```ecmascript 6
+import { onSharedDataChange } from 'knowledgeworker-embedded-asset-api';
+
+// Handle if shared data changes
+onSharedDataChange(sharedData => {
+    if (sharedData === "stage1:completed") {
+        // update something
+    }
+});
+```
+
+### `onShowResult(passed: boolean): void`
+This handler is only for assets of type `question`, `question-with-custom-question-text` and `advanced-question` and only be called if activated in runtime question settings.
+Tells the embedded asset to show the result, e.g. mark answers as correct, partial-correct and wrong with `feedbackPositiveColor`, `feedbackPartialPositiveColor` and `feedbackNegativeColor`.
+
+Example:
+```ecmascript 6
+import { onShowResult } from 'knowledgeworker-embedded-asset-api';
+
+// Handle if result should be shown
+onShowResult(passed => {
+    someAnswer.classList.add('correct');
+});
+```
+
+### `onShowFeedback(): void`
+### `onShowAnswerFeedback(): void`
+### `onShowSolution(): void`
+This handler is only for assets of type `question`, `question-with-custom-question-text` and `advanced-question` and only be called if activated in runtime question settings.
+Tells the embedded asset to show feedback, answer related feedback or the solution.
+
+Example:
+```ecmascript 6
+import { onShowSolution } from 'knowledgeworker-embedded-asset-api';
+
+// Handle if solution should be shown
+onShowSolution(() => {
+    someAnswer.classList.add('solution');
+});
+```
+
+### `onDeactivate(): void`
+This handler is only for assets of type `question`, `question-with-custom-question-text` and `advanced-question`.
+Tells the embedded asset that the question is checked and answer could not be changed any more.
+
+Example:
+```ecmascript 6
+import { onDeactivate } from 'knowledgeworker-embedded-asset-api';
+
+// Handle if question should be deactivated
+onDeactivate(() => {
+    document.body.classList.add('deactivated');
+});
+```
+
+### `onReset(): void`
+This handler is only for assets of type `question`, `question-with-custom-question-text` and `advanced-question`.
+Tells the embedded asset that there is a new try and the question should be activated an all answers reseted.
+
+Example:
+```ecmascript 6
+import { onReset } from 'knowledgeworker-embedded-asset-api';
+
+// Handle if question should be reseted
+onReset(() => {
+    document.body.classList.remove('deactivated');
+    myAnswers = [];
+});
+```
+
+### `onShowCheckAnswerButton(show: boolean): void`
+### `onShowRetryButton(show: boolean): void`
+### `onShowSolutionButton(show: boolean): void`
+This handler is only for assets of type `advanced-question`.
+Tells the embedded asset that one of the "Check answer", "Retry" or "Show solution" should be shown or hidden.
+
+Example:
+```ecmascript 6
+import { onShowCheckAnswerButton } from 'knowledgeworker-embedded-asset-api';
+
+// Handle if question should be deactivated
+onShowCheckAnswerButton((show) => {
+    if (show) {
+        checkAnswerButton.removeAttribute('disbaled');
+    } else {
+        checkAnswerButton.setAttribute('disabled', 'disabled');
+    }
+});
+```
+
+## Deprecation
+Version 1 of knowledgeworker-embedded-asset-api is now deprecated, but will be supported until June 2020.
 
 ## Versioning
 
@@ -101,8 +349,8 @@ This Knowledgeworker Embedded Asset API library is compatible with Knowledgework
 
 ## Authors
 
- - Martin Kutter - [chemmedia](https://www.chemmedia.de/)
- - Alexander Maasch - [chemmedia](https://www.chemmedia.de/)
+ - Martin Kutter - [chemmedia AG](https://www.chemmedia.de/)
+ - Alexander Maasch - [chemmedia AG](https://www.chemmedia.de/)
 
 ## Licence
 
