@@ -13,6 +13,7 @@ export enum PackageAction {
     SOLUTION_BUTTON_CLICKED = 'KW_PACKAGE_SOLUTION_BUTTON_CLICKED',
     RETRY_BUTTON_CLICKED = 'KW_PACKAGE_RETRY_BUTTON_CLICKED',
     SET_SUSPEND_DATA = 'KW_PACKAGE_SET_SUSPEND_DATA',
+    SET_SHARED_DATA = 'KW_PACKAGE_SET_SHARED_DATA',
 
     INITIALIZE = 'KW_PACKAGE_INITIALIZE',
     SET_EVALUATED = 'KW_PACKAGE_SET_EVALUATED',
@@ -28,7 +29,7 @@ export enum PackageAction {
     RESET = 'KW_PACKAGE_RESET',
 }
 
-export enum PackageType {
+export enum AssetType {
     MEDIUM = 'medium',
     QUESTION = 'question',
     QUESTION_WITH_CUSTOM_QUESTION_TEXT = 'question-with-custom-question-text',
@@ -37,7 +38,8 @@ export enum PackageType {
 
 export interface Configuration {
     suspendData: string,
-    packageType: PackageType,
+    sharedData: string,
+    assetType: AssetType,
     isEvaluated: boolean,
     actionColor: string;
     backgroundColor: string;
@@ -70,13 +72,14 @@ interface Listeners {
     showCheckAnswerButton?: (show: boolean) => void;
     showRetryButton?: (show: boolean) => void;
     showSolutionButton?: (show: boolean) => void;
-    showResult?: (correct: boolean) => void;
+    showResult?: (passed: boolean) => void;
     showFeedback?: () => void;
     showAnswerFeedback?: () => void;
     showSolution?: () => void;
     deactivate?: () => void;
     reset?: () => void;
     setDesign?: (update: DesignUpdate) => void;
+    setSharedData?: (sharedData: string) => void;
 }
 
 const getConfig = (): Config | undefined => {
@@ -139,6 +142,14 @@ export const setSuspendData = (suspendData: string) => {
     sendMessage(PackageAction.SET_SUSPEND_DATA, { suspendData });
 };
 
+export const setSharedData = (sharedData: string) => {
+    if (typeof sharedData !== 'string') {
+        throw Error('SuspendData should be a string!');
+    }
+
+    sendMessage(PackageAction.SET_SHARED_DATA, { sharedData });
+};
+
 export const completed = () => sendMessage(PackageAction.SET_COMPLETE);
 export const ready = () => sendMessage(PackageAction.READY);
 export const checkAnswerButtonClicked = () => sendMessage(PackageAction.CHECK_ANSWER_BUTTON_CLICKED);
@@ -160,6 +171,7 @@ export const onShowSolution = (listener: Listeners['showSolution']) => listeners
 export const onDeactivate = (listener: Listeners['deactivate']) => listeners.deactivate = listener;
 export const onReset = (listener: Listeners['reset']) => listeners.reset = listener;
 export const onDesignChange = (listener: Listeners['setDesign']) => listeners.setDesign = listener;
+export const onSharedDataChange = (listener: Listeners['setSharedData']) => listeners.setSharedData = listener;
 
 const onMessage = (event: MessageEvent) => {
     const config = getConfig();
@@ -180,7 +192,7 @@ const onMessage = (event: MessageEvent) => {
             break;
         case PackageAction.SHOW_SOLUTION_BUTTON: listeners?.showSolutionButton?.(data.show);
             break;
-        case PackageAction.SHOW_RESULT: listeners?.showResult?.(data.correct);
+        case PackageAction.SHOW_RESULT: listeners?.showResult?.(data.passed);
             break;
         case PackageAction.SHOW_FEEDBACK: listeners?.showFeedback?.();
             break;
@@ -193,6 +205,8 @@ const onMessage = (event: MessageEvent) => {
         case PackageAction.RESET: listeners?.reset?.();
             break;
         case PackageAction.SET_DESIGN: listeners?.setDesign?.(data.update);
+            break;
+        case PackageAction.SET_SHARED_DATA: listeners?.setSharedData?.(data.sharedData);
             break;
     }
 };
