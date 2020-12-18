@@ -20,7 +20,9 @@ If you are starting from scratch, we highly recommend to fork one of our example
 
 To install the API library, use your preferred package manager, e.g.
 
-    $ yarn add knowledgeworker-embedded-asset-api
+```sh
+$ yarn add knowledgeworker-embedded-asset-api
+```
 
 ## Usage
 
