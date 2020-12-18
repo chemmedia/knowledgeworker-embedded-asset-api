@@ -26,7 +26,7 @@ To install the API library, use your preferred package manager, e.g.
 
 After installing the API library in your project, you can import actions and handlers into your source as follows:
 
-```TypeScript
+```ts
 // Import a library action or handler into your code
 import { setHeight } from 'knowledgeworker-embedded-asset-api';
 
