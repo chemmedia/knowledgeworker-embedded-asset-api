@@ -151,7 +151,17 @@ myAnswerButton.addEventListener("click", () => checkAnswerButtonClicked());
 ```
 
 ### `message(data: any): void`
-If you need additional custom behaviour, please contact our [support team](mailto:support@chemmedia.de). If necessary, they will then ask you to send additional data via the `message` action.
+If you need additional custom behaviour, a customization of the resonsive layout engine in Knowledgeworker Create is needed. Please contact [Knowledgeworker Create Support](https://support.chemmedia.de/). If necessary, we will then ask you to send additional data via the `message` action.
+
+```TypeScript
+// notify that the checkAnswer button was clicked
+message({
+    type: "MY_EVENT",
+    payload: {
+        myValues: "are here"
+    }
+});
+```
 
 ## Handlers
 ### `onInitialize(configuration: Configuration): void`
