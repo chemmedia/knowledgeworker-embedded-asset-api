@@ -152,10 +152,20 @@ import { checkAnswerButtonClicked } from 'knowledgeworker-embedded-asset-api';
 myAnswerButton.addEventListener("click", () => checkAnswerButtonClicked());
 ```
 
-### `message(data: any): void`
+### `message(message: Message): void`
 If you need additional custom behaviour, a customization of the resonsive layout engine in Knowledgeworker Create is needed. Please contact [Knowledgeworker Create Support](https://support.chemmedia.de/). If necessary, we will then ask you to send additional data via the `message` action.
 
+Type:
 ```TypeScript
+interface Message {
+    type: string;
+    payload: {};
+}
+```
+
+```TypeScript
+import { message } from 'knowledgeworker-embedded-asset-api';
+
 // notify that the checkAnswer button was clicked
 message({
     type: "MY_EVENT",

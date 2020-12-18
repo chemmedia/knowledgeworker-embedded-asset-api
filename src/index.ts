@@ -70,6 +70,11 @@ export interface Configuration {
     design: Design;
 }
 
+export interface Message {
+    type: string;
+    payload: {};
+}
+
 interface Listeners {
     initialize?: (configuration: Configuration) => void;
     setEvaluated?: (isEvaluated: boolean) => void;
@@ -159,7 +164,7 @@ export const ready = () => sendMessage(PackageAction.READY);
 export const checkAnswerButtonClicked = () => sendMessage(PackageAction.CHECK_ANSWER_BUTTON_CLICKED);
 export const solutionButtonClicked = () => sendMessage(PackageAction.SOLUTION_BUTTON_CLICKED);
 export const retryButtonClicked = () => sendMessage(PackageAction.RETRY_BUTTON_CLICKED);
-export const message = (data: any) => sendMessage(PackageAction.MESSAGE, data);
+export const message = (message: Message) => sendMessage(PackageAction.MESSAGE, message);
 
 const listeners: Listeners = {};
 
