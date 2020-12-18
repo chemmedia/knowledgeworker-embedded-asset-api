@@ -36,11 +36,7 @@ export enum AssetType {
     ADVANCED_QUESTION = 'advanced-question',
 }
 
-export interface Configuration {
-    suspendData: string,
-    sharedData: string,
-    assetType: AssetType,
-    isEvaluated: boolean,
+export interface Design {
     actionColor: string;
     backgroundColor: string;
     buttonStyles: string;
@@ -64,6 +60,14 @@ export interface DesignUpdate {
     fontFaces?: string;
     headlineTextStyles?: string;
     paragraphTextStyles?: string;
+}
+
+export interface Configuration {
+    suspendData: string;
+    sharedData: string;
+    assetType: AssetType;
+    isEvaluated: boolean;
+    design: Design;
 }
 
 interface Listeners {
@@ -160,7 +164,7 @@ export const message = (data: any) => sendMessage(PackageAction.MESSAGE, data);
 const listeners: Listeners = {};
 
 export const onInitialize = (listener: Listeners['initialize']) => listeners.initialize = listener;
-export const onIsEvaluatedChange = (listener: Listeners['setEvaluated']) => listeners.setEvaluated = listener;
+export const onEvaluatedChanged = (listener: Listeners['setEvaluated']) => listeners.setEvaluated = listener;
 export const onShowCheckAnswerButton = (listener: Listeners['showCheckAnswerButton']) => listeners.showCheckAnswerButton = listener;
 export const onShowRetryButton = (listener: Listeners['showRetryButton']) => listeners.showRetryButton = listener;
 export const onShowSolutionButton = (listener: Listeners['showSolutionButton']) => listeners.showSolutionButton = listener;
@@ -170,8 +174,8 @@ export const onShowAnswerFeedback = (listener: Listeners['showAnswerFeedback']) 
 export const onShowSolution = (listener: Listeners['showSolution']) => listeners.showSolution = listener;
 export const onDeactivate = (listener: Listeners['deactivate']) => listeners.deactivate = listener;
 export const onReset = (listener: Listeners['reset']) => listeners.reset = listener;
-export const onDesignChange = (listener: Listeners['setDesign']) => listeners.setDesign = listener;
-export const onSharedDataChange = (listener: Listeners['setSharedData']) => listeners.setSharedData = listener;
+export const onDesignChanged = (listener: Listeners['setDesign']) => listeners.setDesign = listener;
+export const onSharedDataChanged = (listener: Listeners['setSharedData']) => listeners.setSharedData = listener;
 
 const onMessage = (event: MessageEvent) => {
     const config = getConfig();

@@ -75,11 +75,11 @@ Keep in mind that in various eLearning communication standards like SCORM the am
 Example:
 
 ```ecmascript 6
-import { setSupendData } from 'knowledgeworker-embedded-asset-api';
+import { setSuspendData } from 'knowledgeworker-embedded-asset-api';
 
 // save suspendData each time a button is clicked
 someButton.addEventListener("click", () => {
-    setSupendData('scene1');
+    setSuspendData('scene1');
 });
 ```
 
