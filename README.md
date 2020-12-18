@@ -26,7 +26,7 @@ To install the API library, use your preferred package manager, e.g.
 
 After installing the API library in your project, you can import actions and handlers into your source as follows:
 
-```ecmascript 6
+```TypeScript
 // Import a library action or handler into your code
 import { setHeight } from 'knowledgeworker-embedded-asset-api';
 
@@ -38,7 +38,7 @@ setHeight(500);
 Once your package is ready to communicate with the Knowledgeworker Create runtime you have to tell the API you are ready.
 This action must be triggered within a time frame of 1000ms after the [window load event](https://www.w3schools.com/jsref/event_onload.asp). If no action is send within this time, Knowledgeworker Create assumes that the package does not contain any interactions or hidden content relevant for completion and marks it as completed.
 
-```ecmascript 6
+```TypeScript
 // Import a library component into your code
 import { ready, onInitialize } from 'knowledgeworker-embedded-asset-api';
 
@@ -61,7 +61,7 @@ Tells Knowledgeworker Create to display the embedded asset with the given height
 Embedded assets are integrated via an [iframe tag](https://www.w3schools.com/tags/tag_iframe.asp). Knowledgeworker Create automatically adjusts the width of this iframe to fit the device screen size as well as surrounding content elements. By default, the height is calculated based on the current width and the initial aspect ratio configured by maximum width and height in the Knowledgeworker Create media asset editor. However, this does not suit all content display situations or dynamic contents and in these circumstances you may want to explicitly set the height of your embedded assets.
 
 Example:
-```ecmascript 6
+```TypeScript
 import { setHeight } from 'knowledgeworker-embedded-asset-api';
 
 // Display this embedded asset with a height of 350 pixels
@@ -74,7 +74,7 @@ Keep in mind that in various eLearning communication standards like SCORM the am
 
 Example:
 
-```ecmascript 6
+```TypeScript
 import { setSuspendData } from 'knowledgeworker-embedded-asset-api';
 
 // save suspendData each time a button is clicked
@@ -89,7 +89,7 @@ Keep in mind that in various eLearning communication standards like SCORM the am
 
 Example:
 
-```ecmascript 6
+```TypeScript
 import { setSharedData } from 'knowledgeworker-embedded-asset-api';
 
 // save sharedData each time a button is clicked
@@ -106,7 +106,7 @@ Typically, this event will occur after the user has read all texts, finished wat
 
 Example:
 
-```ecmascript 6
+```TypeScript
 import { complete } from 'knowledgeworker-embedded-asset-api';
 
 // Mark the asset as completed
@@ -126,7 +126,7 @@ This action should be triggered every time the user submits or revokes an answer
 
 Example:
 
-```ecmascript 6
+```TypeScript
 import { answered } from 'knowledgeworker-embedded-asset-api';
 
 // store answer each time a button is clicked
@@ -143,19 +143,22 @@ Advanced question assets provide buttons for "Check answer", "Retry" and "Show s
 
 Example:
 
-```ecmascript 6
-import { checkAnswerButton } from 'knowledgeworker-embedded-asset-api';
+```TypeScript
+import { checkAnswerButtonClicked } from 'knowledgeworker-embedded-asset-api';
 
 // notify that the checkAnswer button was clicked
 myAnswerButton.addEventListener("click", () => checkAnswerButtonClicked());
 ```
+
+### `message(data: any): void`
+If you need additional custom behaviour, please contact our [support team](mailto:support@chemmedia.de). If necessary, they will then ask you to send additional data via the `message` action.
 
 ## Handlers
 ### `onInitialize(configuration: Configuration): void`
 Is triggered directly after the `ready` action and provides the asset with the necessary information to initialise itself.
 
 Types:
-```
+```TypeScript
 enum AssetType {
     MEDIUM = 'medium',
     QUESTION = 'question',
@@ -163,11 +166,7 @@ enum AssetType {
     ADVANCED_QUESTION = 'advanced-question',
 }
 
-interface Configuration {
-    suspendData: string,
-    sharedData: string,
-    assetType: AssetType,
-    isEvaluated: boolean,
+interface Design {
     actionColor: string;
     backgroundColor: string;
     buttonStyles: string; // experimental, could change in release
@@ -179,10 +178,18 @@ interface Configuration {
     headlineTextStyles: string; // experimental, could change in release
     paragraphTextStyles: string; // experimental, could change in release
 }
+
+interface Configuration {
+    suspendData: string;
+    sharedData: string;
+    assetType: AssetType;
+    isEvaluated: boolean;
+    design: Design;
+}
 ```
 
 Example:
-```ecmascript 6
+```TypeScript
 // Import a library component into your code
 import { ready, onInitialize } from 'knowledgeworker-embedded-asset-api';
 
@@ -199,7 +206,7 @@ This handler is only for assets of type `question`, `question-with-custom-questi
 Tells the embedded asset that the setting is changed weather the asset is evaluated or not on runtime. For comparison, the initial value is supplied in `onInitialze`.
 
 Example:
-```ecmascript 6
+```TypeScript
 import { onEvaluatedChanged } from 'knowledgeworker-embedded-asset-api';
 
 // Handle if changed weather the asset is evaluated or not
@@ -213,7 +220,7 @@ Tells the embedded asset that there is an update of design params. For compariso
 Only the changed params are supplied,
 
 Types:
-```
+```TypeScript
 interface DesignUpdate {
     actionColor?: string;
     backgroundColor?: string;
@@ -229,7 +236,7 @@ interface DesignUpdate {
 ```
 
 Example:
-```ecmascript 6
+```TypeScript
 import { onDesignChanged } from 'knowledgeworker-embedded-asset-api';
 
 // Handle design changes
@@ -244,7 +251,7 @@ onDesignChanged(update => {
 Tells the embedded asset that the shared data string changed. For comparison, the initial value is supplied in `onInitialze`.
 
 Example:
-```ecmascript 6
+```TypeScript
 import { onSharedDataChanged } from 'knowledgeworker-embedded-asset-api';
 
 // Handle if shared data changes
@@ -260,7 +267,7 @@ This handler is only for assets of type `question`, `question-with-custom-questi
 Tells the embedded asset to show the result, e.g. mark answers as correct, partial-correct and wrong with `feedbackPositiveColor`, `feedbackPartialPositiveColor` and `feedbackNegativeColor`.
 
 Example:
-```ecmascript 6
+```TypeScript
 import { onShowResult } from 'knowledgeworker-embedded-asset-api';
 
 // Handle if result should be shown
@@ -276,7 +283,7 @@ This handler is only for assets of type `question`, `question-with-custom-questi
 Tells the embedded asset to show feedback, answer related feedback or the solution.
 
 Example:
-```ecmascript 6
+```TypeScript
 import { onShowSolution } from 'knowledgeworker-embedded-asset-api';
 
 // Handle if solution should be shown
@@ -290,7 +297,7 @@ This handler is only for assets of type `question`, `question-with-custom-questi
 Tells the embedded asset that the question is checked and answer must not be changeable any more.
 
 Example:
-```ecmascript 6
+```TypeScript
 import { onDeactivate } from 'knowledgeworker-embedded-asset-api';
 
 // Handle if question should be deactivated
@@ -304,7 +311,7 @@ This handler is only for assets of type `question`, `question-with-custom-questi
 Tells the embedded asset that there is a new try and the question should be activated an all answers reseted.
 
 Example:
-```ecmascript 6
+```TypeScript
 import { onReset } from 'knowledgeworker-embedded-asset-api';
 
 // Handle if question should be reseted
@@ -321,7 +328,7 @@ This handler is only for assets of type `advanced-question`.
 Tells the embedded asset that one of the "Check answer", "Retry" or "Show solution" should be shown or hidden.
 
 Example:
-```ecmascript 6
+```TypeScript
 import { onShowCheckAnswerButton } from 'knowledgeworker-embedded-asset-api';
 
 // Handle if question should be deactivated
