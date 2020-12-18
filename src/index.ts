@@ -4,16 +4,18 @@ interface Config {
 }
 
 export enum PackageAction {
+    READY = 'KW_PACKAGE_READY',
     SET_HEIGHT = 'KW_PACKAGE_SET_HEIGHT',
     SET_COMPLETE = 'KW_PACKAGE_SET_COMPLETE',
-    READY = 'KW_PACKAGE_READY',
+    MESSAGE = 'KW_PACKAGE_MESSAGE',
     ANSWERED = 'KW_PACKAGE_ANSWERED',
     CHECK_ANSWER_BUTTON_CLICKED = 'KW_PACKAGE_CHECK_ANSWER_BUTTON_CLICKED',
     SOLUTION_BUTTON_CLICKED = 'KW_PACKAGE_SOLUTION_BUTTON_CLICKED',
     RETRY_BUTTON_CLICKED = 'KW_PACKAGE_RETRY_BUTTON_CLICKED',
-    SUSPEND_DATA = 'KW_PACKAGE_SUSPEND_DATA',
+    SET_SUSPEND_DATA = 'KW_PACKAGE_SET_SUSPEND_DATA',
+
     INITIALIZE = 'KW_PACKAGE_INITIALIZE',
-    IS_EVALUATED = 'KW_PACKAGE_IS_EVALUATED',
+    SET_EVALUATED = 'KW_PACKAGE_SET_EVALUATED',
     SHOW_CHECK_ANSWER_BUTTON = 'KW_PACKAGE_SHOW_CHECK_ANSWER_BUTTON',
     SHOW_RESULT = 'KW_PACKAGE_SHOW_RESULT',
     SHOW_FEEDBACK = 'KW_PACKAGE_SHOW_FEEDBACK',
@@ -21,10 +23,9 @@ export enum PackageAction {
     SHOW_RETRY_BUTTON = 'KW_PACKAGE_SHOW_RETRY_BUTTON',
     SHOW_SOLUTION_BUTTON = 'KW_PACKAGE_SHOW_SOLUTION_BUTTON',
     SHOW_SOLUTION = 'KW_PACKAGE_SHOW_SOLUTION',
-    UPDATE_DESIGN = 'KW_PACKAGE_UPDATE_DESIGN',
+    SET_DESIGN = 'KW_PACKAGE_SET_DESIGN',
     DEACTIVATE = 'KW_PACKAGE_DEACTIVATE',
     RESET = 'KW_PACKAGE_RESET',
-    CUSTOM = 'KW_PACKAGE_CUSTOM',
 }
 
 export enum PackageType {
@@ -38,7 +39,6 @@ export interface Configuration {
     suspendData: string,
     packageType: PackageType,
     isEvaluated: boolean,
-    isInAssessment: boolean,
     actionColor: string;
     backgroundColor: string;
     buttonStyles: string;
@@ -66,7 +66,7 @@ export interface DesignUpdate {
 
 interface Listeners {
     initialize?: (configuration: Configuration) => void;
-    isEvaluated?: (isEvaluated: boolean) => void;
+    setEvaluated?: (isEvaluated: boolean) => void;
     showCheckAnswerButton?: (show: boolean) => void;
     showRetryButton?: (show: boolean) => void;
     showSolutionButton?: (show: boolean) => void;
@@ -76,7 +76,7 @@ interface Listeners {
     showSolution?: () => void;
     deactivate?: () => void;
     reset?: () => void;
-    updateDesign?: (update: DesignUpdate) => void;
+    setDesign?: (update: DesignUpdate) => void;
 }
 
 const getConfig = (): Config | undefined => {
@@ -136,24 +136,20 @@ export const setSuspendData = (suspendData: string) => {
         throw Error('SuspendData should be a string!');
     }
 
-    sendMessage(PackageAction.SUSPEND_DATA, { suspendData });
+    sendMessage(PackageAction.SET_SUSPEND_DATA, { suspendData });
 };
 
-const setCompletion = (complete: boolean) => sendMessage(PackageAction.SET_COMPLETE, { complete });
-
-export const disableAutomaticCompletion = () => setCompletion(false);
-export const triggerCompleted = () => setCompletion(true);
+export const completed = () => sendMessage(PackageAction.SET_COMPLETE);
 export const ready = () => sendMessage(PackageAction.READY);
 export const checkAnswerButtonClicked = () => sendMessage(PackageAction.CHECK_ANSWER_BUTTON_CLICKED);
 export const solutionButtonClicked = () => sendMessage(PackageAction.SOLUTION_BUTTON_CLICKED);
 export const retryButtonClicked = () => sendMessage(PackageAction.RETRY_BUTTON_CLICKED);
-export const custom = (data: any) => sendMessage(PackageAction.CUSTOM, data);
-
+export const message = (data: any) => sendMessage(PackageAction.MESSAGE, data);
 
 const listeners: Listeners = {};
 
 export const onInitialize = (listener: Listeners['initialize']) => listeners.initialize = listener;
-export const onIsEvaluated = (listener: Listeners['isEvaluated']) => listeners.isEvaluated = listener;
+export const onIsEvaluatedChange = (listener: Listeners['setEvaluated']) => listeners.setEvaluated = listener;
 export const onShowCheckAnswerButton = (listener: Listeners['showCheckAnswerButton']) => listeners.showCheckAnswerButton = listener;
 export const onShowRetryButton = (listener: Listeners['showRetryButton']) => listeners.showRetryButton = listener;
 export const onShowSolutionButton = (listener: Listeners['showSolutionButton']) => listeners.showSolutionButton = listener;
@@ -163,7 +159,7 @@ export const onShowAnswerFeedback = (listener: Listeners['showAnswerFeedback']) 
 export const onShowSolution = (listener: Listeners['showSolution']) => listeners.showSolution = listener;
 export const onDeactivate = (listener: Listeners['deactivate']) => listeners.deactivate = listener;
 export const onReset = (listener: Listeners['reset']) => listeners.reset = listener;
-export const onUpdateDesign = (listener: Listeners['updateDesign']) => listeners.updateDesign = listener;
+export const onDesignChange = (listener: Listeners['setDesign']) => listeners.setDesign = listener;
 
 const onMessage = (event: MessageEvent) => {
     const config = getConfig();
@@ -176,7 +172,7 @@ const onMessage = (event: MessageEvent) => {
     switch (type) {
         case PackageAction.INITIALIZE: listeners?.initialize?.(data);
             break;
-        case PackageAction.IS_EVALUATED: listeners?.isEvaluated?.(data.isEvaluated);
+        case PackageAction.SET_EVALUATED: listeners?.setEvaluated?.(data.isEvaluated);
             break;
         case PackageAction.SHOW_CHECK_ANSWER_BUTTON: listeners?.showCheckAnswerButton?.(data.show);
             break;
@@ -196,7 +192,7 @@ const onMessage = (event: MessageEvent) => {
             break;
         case PackageAction.RESET: listeners?.reset?.();
             break;
-        case PackageAction.UPDATE_DESIGN: listeners?.updateDesign?.(data.update);
+        case PackageAction.SET_DESIGN: listeners?.setDesign?.(data.update);
             break;
     }
 };
