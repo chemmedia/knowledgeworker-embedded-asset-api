@@ -193,8 +193,8 @@ Example:
 // Import a library component into your code
 import { ready, onInitialize } from 'knowledgeworker-embedded-asset-api';
 
-onInitialize(configuration => {
-    // may use `suspendData` from `configuration` to restore your asset in the last state
+onInitialize((configuration) => {
+    // may use `configuration.suspendData` to restore your asset in the last state
 });
 
 // Tells the Knowledgeworker Create that the embedded asset is ready to handle events.
