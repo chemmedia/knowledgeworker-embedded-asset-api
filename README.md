@@ -1,7 +1,7 @@
 # Knowledgeworker Create Embedded Asset API
 
 A javascript client to integrate rich content packages into responsive 
-[Knowledgeworker Create](https://www.knowledgeworker.com/?utm_source=code&utm_campaign=embedded-asset-api) contents.
+[Knowledgeworker Create](https://www.knowledgeworker.com/knowledgeworker-create/?utm_source=code&utm_campaign=embedded-asset-api) contents.
 
 By embedding rich HTML5 assets into Knowledgeworker Create contents, authors of content marketing or digital learning are 
 able to create immersive web experiences. This API client allows embedded content to communicate with the Knowledgeworker Create runtime to integrate smoothly into responsive environments.
@@ -12,7 +12,7 @@ These instructions will guide you through the process of integrating the Knowled
 
 ### Prerequisites
 
-If you are starting from scratch, we highly recomment to fork one of our examples: 
+If you are starting from scratch, we highly recommend to fork one of our examples: 
 * [Example Medium Repository](https://github.com/chemmedia/knowledgeworker-embedded-asset-api-example)
 * [Example Question Repository](https://github.com/chemmedia/knowledgeworker-embedded-asset-api-question-example)
 
@@ -43,23 +43,22 @@ This action must be triggered within a time frame of 1000ms after the [window lo
 import { ready, onInitialize } from 'knowledgeworker-embedded-asset-api';
 
 onInitialize((configuration) => {
-    // may use `suspendData` from `configuration` to restore your asset in the last state
+    // may use `configuration.suspendData` to restore your asset in the last state
 });
 
-// Tells the Knowledgeworker Create that the embedded asset is ready to handle events.
+// Tells Knowledgeworker Create that this embedded asset is ready to handle events.
 ready();
 ```
 
 ## Actions
 ### `ready(): void`
-Tells the Knowledgeworker Create that the embedded asset is ready to handle events.
+Tells Knowledgeworker Create that the embedded asset is ready to handle events.
 
 ### `setHeight(height: number): void`
 
 Tells Knowledgeworker Create to display the embedded asset with the given height.
 
-Embedded assets are currently integrated via an [iframe tag](https://www.w3schools.com/tags/tag_iframe.asp). Knowledgeworker Create automatically adjusts the width of this iframe to fit the device screen size as well as surrounding content elements. By default, the height is calculated based on the current width and the initial aspect ratio configured by maximum width and height in the Knowledgeworker Create media asset editor. However, this does not suit all content display situations or dynamic contents and in these circumstances you may want to explicitly set the height of 
-your embedded assets.
+Embedded assets are integrated via an [iframe tag](https://www.w3schools.com/tags/tag_iframe.asp). Knowledgeworker Create automatically adjusts the width of this iframe to fit the device screen size as well as surrounding content elements. By default, the height is calculated based on the current width and the initial aspect ratio configured by maximum width and height in the Knowledgeworker Create media asset editor. However, this does not suit all content display situations or dynamic contents and in these circumstances you may want to explicitly set the height of your embedded assets.
 
 Example:
 ```ecmascript 6
@@ -70,8 +69,8 @@ setHeight(350);
 ```
 
 ### `setSuspendData(suspendData: string): void`
-Use the supendData to store the state, e.g. given answers, of the asset. This suspendData is made available again when the asset is restarted in the `onInitialize` handler.
-Keep in mind that in various eLearning communication standards the amount of data that can be stored is extremely limited. So reduce the stored data to the most necessary.
+Use the supendData to store the state of the asset, e.g. given answers. This suspendData is made available again when the asset is restarted in the `onInitialize` handler.
+Keep in mind that in various eLearning communication standards like SCORM the amount of data that can be stored is extremely limited. Reduce the stored data to the most necessary.
 
 Example:
 
@@ -80,13 +79,13 @@ import { setSupendData } from 'knowledgeworker-embedded-asset-api';
 
 // save suspendData each time a button is clicked
 someButton.addEventListener("click", () => {
-    setSupendData('szene1');
+    setSupendData('scene1');
 });
 ```
 
 ### `setSharedData(sharedData: string): void`
-Shared Data is used to exchange data between different assets within a Knowledgeworker Create course. This data can be written and received by all assets and is made available again when the asset is restarted in the `onInitialize` handler and each time it changes in the `onSharedDataChange` handler.
-Keep in mind that in various eLearning communication standards the amount of data that can be stored is extremely limited. So reduce the stored data to the most necessary.
+Shared Data is used to exchange data between different assets within a Knowledgeworker Create course. This data can be written and read by all embedded assets and is made available again when the asset is restarted in the `onInitialize` handler and each time it changes in the `onSharedDataChanged` handler.
+Keep in mind that in various eLearning communication standards like SCORM the amount of data that can be stored is extremely limited. Reduce the stored data to the most necessary.
 
 Example:
 
@@ -117,7 +116,7 @@ somePopup.addEventListener("click", () => complete());
 ### `answered(answer: string | undefined, passed: boolean, score: number): void`
 This action is only for assets of type `question`, `question-with-custom-question-text` and `advanced-question`.
 
-This action should be triggered every time the user submits or revokes a answer. If the answer is a `string, the question is marked as evaluable.
+This action should be triggered every time the user submits or revokes an answer. If the answer is a `string`, the question is marked as evaluable.
 
 * `answer` 
     * `undefined` if there is now answer yet or the answer is reverted by the user
@@ -139,8 +138,8 @@ someButton.addEventListener("click", () => {
 ### `checkAnswerButtonClicked(): void`
 ### `solutionButtonClicked(): void`
 ### `retryButtonClicked(): void`
-This action is only for assets of type `advanced-question`.
-Advanced question assets automatically provide buttons for "Check answer", "Retry" and "Show solution" when needed. When these are clicked, the API must be informed.
+These actions are only for assets of type `advanced-question`.
+Advanced question assets provide buttons for "Check answer", "Retry" and "Show solution" by themselfes when needed. When these are clicked, the API must be informed.
 
 Example:
 
@@ -148,7 +147,7 @@ Example:
 import { checkAnswerButton } from 'knowledgeworker-embedded-asset-api';
 
 // notify that the checkAnswer button was clicked
-checkAnswerButton.addEventListener("click", () => checkAnswerButtonClicked());
+myAnswerButton.addEventListener("click", () => checkAnswerButtonClicked());
 ```
 
 ## Handlers
@@ -195,21 +194,21 @@ onInitialize(configuration => {
 ready();
 ```
 
-### `onIsEvaluatedChange(isEvaluated: boolean): void`
+### `onEvaluatedChanged(isEvaluated: boolean): void`
 This handler is only for assets of type `question`, `question-with-custom-question-text` and `advanced-question`.
 Tells the embedded asset that the setting is changed weather the asset is evaluated or not on runtime. For comparison, the initial value is supplied in `onInitialze`.
 
 Example:
 ```ecmascript 6
-import { onIsEvaluatedChange } from 'knowledgeworker-embedded-asset-api';
+import { onEvaluatedChanged } from 'knowledgeworker-embedded-asset-api';
 
 // Handle if changed weather the asset is evaluated or not
-onIsEvaluatedChange(isEvaluated => {
+onEvaluatedChanged(isEvaluated => {
     // update something
 });
 ```
 
-### `onDesignChange(update: DesignUpdate): void`
+### `onDesignChanged(update: DesignUpdate): void`
 Tells the embedded asset that there is an update of design params. For comparison, the initial value is supplied in `onInitialze`.
 Only the changed params are supplied,
 
@@ -231,25 +230,25 @@ interface DesignUpdate {
 
 Example:
 ```ecmascript 6
-import { onDesignChange } from 'knowledgeworker-embedded-asset-api';
+import { onDesignChanged } from 'knowledgeworker-embedded-asset-api';
 
 // Handle design changes
-onDesignChange(update => {
+onDesignChanged(update => {
     if (update.actionColor) {
         // change action color    
     }
 });
 ```
 
-### `onSharedDataChange(sharedData: string): void`
+### `onSharedDataChanged(sharedData: string): void`
 Tells the embedded asset that the shared data string changed. For comparison, the initial value is supplied in `onInitialze`.
 
 Example:
 ```ecmascript 6
-import { onSharedDataChange } from 'knowledgeworker-embedded-asset-api';
+import { onSharedDataChanged } from 'knowledgeworker-embedded-asset-api';
 
 // Handle if shared data changes
-onSharedDataChange(sharedData => {
+onSharedDataChanged(sharedData => {
     if (sharedData === "stage1:completed") {
         // update something
     }
@@ -288,7 +287,7 @@ onShowSolution(() => {
 
 ### `onDeactivate(): void`
 This handler is only for assets of type `question`, `question-with-custom-question-text` and `advanced-question`.
-Tells the embedded asset that the question is checked and answer could not be changed any more.
+Tells the embedded asset that the question is checked and answer must not be changeable any more.
 
 Example:
 ```ecmascript 6
@@ -336,7 +335,7 @@ onShowCheckAnswerButton((show) => {
 ```
 
 ## Deprecation
-Version 1 of knowledgeworker-embedded-asset-api is now deprecated, but will be supported until June 2020.
+Version 1 of knowledgeworker-embedded-asset-api is now deprecated, but will be supported until end of 2021.
 
 ## Versioning
 
