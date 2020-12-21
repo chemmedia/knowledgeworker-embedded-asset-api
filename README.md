@@ -166,7 +166,6 @@ interface Message {
 ```TypeScript
 import { message } from 'knowledgeworker-embedded-asset-api';
 
-// notify that the checkAnswer button was clicked
 message({
     type: "MY_EVENT",
     payload: {
