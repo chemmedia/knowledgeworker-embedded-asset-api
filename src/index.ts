@@ -164,7 +164,7 @@ export const ready = () => sendMessage(PackageAction.READY);
 export const checkAnswerButtonClicked = () => sendMessage(PackageAction.CHECK_ANSWER_BUTTON_CLICKED);
 export const solutionButtonClicked = () => sendMessage(PackageAction.SOLUTION_BUTTON_CLICKED);
 export const retryButtonClicked = () => sendMessage(PackageAction.RETRY_BUTTON_CLICKED);
-export const message = (message: Message) => sendMessage(PackageAction.MESSAGE, message);
+export const message = (message: Message) => sendMessage(PackageAction.MESSAGE, { message });
 
 const listeners: Listeners = {};
 
