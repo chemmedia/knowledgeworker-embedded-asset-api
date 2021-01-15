@@ -205,6 +205,7 @@ interface Configuration {
     sharedData: string;
     assetType: AssetType;
     isEvaluated: boolean;
+    learnerName: string;
     design: Design;
 }
 ```
