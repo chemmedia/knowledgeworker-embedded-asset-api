@@ -62,12 +62,16 @@ export interface DesignUpdate {
     paragraphTextStyles?: string;
 }
 
+interface LMSData {
+    learnerName: string;
+}
+
 export interface Configuration {
     suspendData: string;
     sharedData: string;
     assetType: AssetType;
     isEvaluated: boolean;
-    learnerName: string;
+    lmsData: LMSData;
     design: Design;
 }
 
