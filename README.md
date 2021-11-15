@@ -39,10 +39,10 @@ setHeight(500);
 Tells Knowledgeworker Create to display the embedded asset with the given height.
 
 Embedded assets are currently integrated via an [iframe tag](https://www.w3schools.com/tags/tag_iframe.asp). Knowledgeworker Create automatically adjusts the width of this iframe to fit the device screen size as well as surrounding content elements. By default, the height is calculated based on the current width and the initial aspect ratio configured by maximum width and height in the Knowledgeworker Create media asset editor. However, this does not suit all content display situations or dynamic contents and in these circumstances you may want to explicitly set the height of 
-your embedded assets.
+your embedded assets. Use `undefined` to restore default behavior.
 
 ```ecmascript 6
-Type: setHeight(height: number): void
+Type: setHeight(height: number | undefined): void
 ```
 
 Example:
