@@ -124,9 +124,9 @@ const sendMessage = (type: PackageAction, data?: {}) => {
     }
 }
 
-export const setHeight = (height: number) => {
-    if (typeof height !== 'number' || isNaN(height) || height <= 0) {
-        throw Error('Height should be a positive number!');
+export const setHeight = (height: number | undefined) => {
+    if (height !== undefined && (typeof height !== 'number' || isNaN(height) || height <= 0)) {
+        throw Error('Height should be a positive number or undefined!');
     }
 
     sendMessage(PackageAction.SET_HEIGHT, { height });
