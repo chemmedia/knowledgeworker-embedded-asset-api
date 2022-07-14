@@ -35,27 +35,47 @@ import { setHeight } from 'knowledgeworker-embedded-asset-api';
 // Tell the Knowledgeworker Create runtime to display this embedded asset with a height of 500 pixels
 setHeight(500);
 ```
-## Initialization
 
-Once your package is ready to communicate with the Knowledgeworker Create runtime you have to tell the API you are ready.
-This action must be triggered within a time frame of 1000ms after the [window load event](https://www.w3schools.com/jsref/event_onload.asp). If no action is send within this time, Knowledgeworker Create assumes that the package does not contain any interactions or hidden content relevant for completion and marks it as completed.
+* [Configuration](#configuration)
+* [Actions](#actions)
+* [Handlers](#handlers)
+* [Design/UI](#design)
 
+<a id="configuration"></a>
+## Configuration `configure(options: Options): void`
+Type:
 ```TypeScript
-// Import a library component into your code
-import { ready, onInitialize } from 'knowledgeworker-embedded-asset-api';
-
-onInitialize((configuration) => {
-    // may use `configuration.suspendData` to restore your asset in the last state
-});
-
-// Tells Knowledgeworker Create that this embedded asset is ready to handle events.
-ready();
+interface Options {
+  autoCompletion?: boolean;
+}
 ```
 
-## Actions
-### `ready(): void`
-Tells Knowledgeworker Create that the embedded asset is ready to handle events.
+To change the default behavior of the API you can use `configure()` to provide your own configuration.
+The configuration has to be set before the [window load event](https://www.w3schools.com/jsref/event_onload.asp).
 
+### `autoCompletion: boolean`
+Default: `true`
+
+This param is only necessary for assets of type `medium` and not needed by question assets.
+
+By default, Knowledgeworker Create assumes that the package does not contain any interactions or hidden content relevant for completion and marks it as completed after the [window load event](https://www.w3schools.com/jsref/event_onload.asp).
+But many types of assets initially hide parts of their content to reduce cognitive load and to adapt to users individual needs. To measure completion, such hidden contents may have to be taken into account. To do so you can disable `autoCompletion` and trigger the [`completed()`](#completed-void) action if all relevant content has been seen by the user.
+
+Example:
+
+```TypeScript
+import { configure, completed } from 'knowledgeworker-embedded-asset-api';
+
+configure({
+  autoCompletion: false, // disable automatic completion
+});
+
+// Mark the asset as completed
+somePopup.addEventListener("click", () => completed());
+```
+
+<a id="actions"></a>
+## Actions
 ### `setHeight(height: number | undefined): void`
 
 Tells Knowledgeworker Create to display the embedded asset with the given height. Use `undefined` to restore default behavior.
@@ -103,16 +123,21 @@ someButton.addEventListener("click", () => {
 ### `completed(): void`
 This action is only for assets of type `medium` and not needed by question assets.
 
-Simple assets, such as images, may be marked as completed once they have been displayed to the user. Many types of assets initially hide parts of their content to reduce cognitive load and to adapt to users individual needs. To measure completion, such hidden contents may have to be taken into account. When all relevant content has been viewed, the asset must trigger the `complete()` action.
+By default, Knowledgeworker Create assumes that the package does not contain any interactions or hidden content relevant for completion and marks it as completed after the [window load event](https://www.w3schools.com/jsref/event_onload.asp).
+If you want to handle completion by your own, you have to disable [`autoCompletion`](#autoCompletion-boolean). Later you can trigger the `completed()` action if all relevant content has been seen by the user.
 Typically, this event will occur after the user has read all texts, finished watching animations and videos or completed all interactions in your asset.
 
 Example:
 
 ```TypeScript
-import { complete } from 'knowledgeworker-embedded-asset-api';
+import { configure, completed } from 'knowledgeworker-embedded-asset-api';
+
+configure({
+  autoCompletion: false, // disable automatic completion
+});
 
 // Mark the asset as completed
-somePopup.addEventListener("click", () => complete());
+somePopup.addEventListener("click", () => completed());
 ```
 
 ### `answered(answer: string | undefined, passed: boolean, score: number): void`
@@ -174,9 +199,12 @@ message({
 });
 ```
 
+<a id="handlers"></a>
 ## Handlers
+All Handlers must be attached before the [window load event](https://www.w3schools.com/jsref/event_onload.asp).
+
 ### `onInitialize(configuration: Configuration): void`
-Is triggered directly after the `ready` action and provides the asset with the necessary information to initialise itself.
+Is triggered directly after the [window load event](https://www.w3schools.com/jsref/event_onload.asp) and provides the asset with the necessary information to initialise itself.
 
 Types:
 ```TypeScript
@@ -187,17 +215,8 @@ enum AssetType {
     ADVANCED_QUESTION = 'advanced-question',
 }
 
-interface Design {
-    actionColor: string;
-    backgroundColor: string;
-    buttonStyles: string; // experimental, could change in release
-    feedbackNegativeColor: string;
-    feedbackPartialPositiveColor: string;
-    feedbackPositiveColor: string;
-    feedbackSolutionColor: string;
-    fontFaces: string; // experimental, could change in release
-    headlineTextStyles: string; // experimental, could change in release
-    paragraphTextStyles: string; // experimental, could change in release
+interface LMSData {
+  learnerName: string;
 }
 
 interface Configuration {
@@ -205,22 +224,18 @@ interface Configuration {
     sharedData: string;
     assetType: AssetType;
     isEvaluated: boolean;
-    learnerName: string;
-    design: Design;
+    lmsData: LMSData;
+    design: Design; // see https://github.com/chemmedia/knowledgeworker-embedded-asset-api-ui
 }
 ```
 
 Example:
 ```TypeScript
-// Import a library component into your code
-import { ready, onInitialize } from 'knowledgeworker-embedded-asset-api';
+import { onInitialize } from 'knowledgeworker-embedded-asset-api';
 
 onInitialize((configuration) => {
     // may use `configuration.suspendData` to restore your asset in the last state
 });
-
-// Tells the Knowledgeworker Create that the embedded asset is ready to handle events.
-ready();
 ```
 
 ### `onEvaluatedChanged(isEvaluated: boolean): void`
@@ -237,37 +252,9 @@ onEvaluatedChanged(isEvaluated => {
 });
 ```
 
-### `onDesignChanged(update: DesignUpdate): void`
+### `onDesignChanged(design: Design): void`
 Tells the embedded asset that there is an update of design params. For comparison, the initial value is supplied in `onInitialze`.
-Only the changed params are supplied,
-
-Types:
-```TypeScript
-interface DesignUpdate {
-    actionColor?: string;
-    backgroundColor?: string;
-    buttonStyles?: string; // experimental, could change in release
-    feedbackNegativeColor?: string;
-    feedbackPartialPositiveColor?: string;
-    feedbackPositiveColor?: string;
-    feedbackSolutionColor?: string;
-    fontFaces?: string; // experimental, could change in release
-    headlineTextStyles?: string; // experimental, could change in release
-    paragraphTextStyles?: string; // experimental, could change in release
-}
-```
-
-Example:
-```TypeScript
-import { onDesignChanged } from 'knowledgeworker-embedded-asset-api';
-
-// Handle design changes
-onDesignChanged(update => {
-    if (update.actionColor) {
-        // change action color    
-    }
-});
-```
+See [knowledgeworker-embedded-asset-api-ui](https://github.com/chemmedia/knowledgeworker-embedded-asset-api-ui) for more details.
 
 ### `onSharedDataChanged(sharedData: string): void`
 Tells the embedded asset that the shared data string changed. For comparison, the initial value is supplied in `onInitialze`.
@@ -363,8 +350,13 @@ onShowCheckAnswerButton((show) => {
 });
 ```
 
+<a id="design"></a>
+##Design/UI
+To use native looking Knowledgeworker Create UI elements in your rich content packages [knowledgeworker-embedded-asset-api-ui](https://github.com/chemmedia/knowledgeworker-embedded-asset-api-ui) is integrated by default in knowledgeworker-embedded-asset-api.
+See docs there on how to use it.
+
 ## Deprecation
-Version 1 of knowledgeworker-embedded-asset-api is now deprecated, but will be supported until end of 2021.
+Version 1 of knowledgeworker-embedded-asset-api is now deprecated, but will be supported until end of 2022.
 
 ## Versioning
 
@@ -373,7 +365,7 @@ repository.
 
 ## Compatibility
 
-This Knowledgeworker Embedded Asset API library is compatible with Knowledgeworker Create 21.1 and above.
+This Knowledgeworker Embedded Asset API library is compatible with Knowledgeworker Create 22.7 and above.
 
 ## Authors
 
