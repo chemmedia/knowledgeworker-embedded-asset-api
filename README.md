@@ -343,7 +343,7 @@ import { onShowCheckAnswerButton } from 'knowledgeworker-embedded-asset-api';
 // Handle if question should be deactivated
 onShowCheckAnswerButton((show) => {
     if (show) {
-        checkAnswerButton.removeAttribute('disbaled');
+        checkAnswerButton.removeAttribute('disabled');
     } else {
         checkAnswerButton.setAttribute('disabled', 'disabled');
     }
