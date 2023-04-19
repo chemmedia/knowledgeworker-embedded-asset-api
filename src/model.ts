@@ -46,6 +46,21 @@ export interface LMSData {
     learnerName: string;
 }
 
+export enum ContextType {
+    MEDIUM = 'medium',
+    QUESTION = 'question',
+    SECTION = 'section',
+    CONTENT = 'content',
+    CHAPTER = 'chapter',
+    SITE = 'site',
+}
+
+export interface Context {
+    uid: string;
+    type: ContextType;
+    title?: string; // HTML string
+}
+
 export interface Configuration {
     suspendData: string;
     sharedData: string;
@@ -53,6 +68,7 @@ export interface Configuration {
     isEvaluated: boolean;
     lmsData: LMSData;
     design: Design;
+    context: Context[];
 }
 
 export interface InternalConfiguration extends Configuration {

@@ -219,6 +219,21 @@ interface LMSData {
   learnerName: string;
 }
 
+export enum ContextType {
+  MEDIUM = 'medium',
+  QUESTION = 'question',
+  SECTION = 'section',
+  CONTENT = 'content',
+  CHAPTER = 'chapter',
+  SITE = 'site',
+}
+
+export interface Context {
+  uid: string;
+  type: ContextType;
+  title?: string; // HTML string
+}
+
 interface Configuration {
     suspendData: string;
     sharedData: string;
@@ -226,6 +241,7 @@ interface Configuration {
     isEvaluated: boolean;
     lmsData: LMSData;
     design: Design; // see https://github.com/chemmedia/knowledgeworker-embedded-asset-api-ui
+    context: Context[];
 }
 ```
 
