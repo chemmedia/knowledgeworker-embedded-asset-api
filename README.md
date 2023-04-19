@@ -241,7 +241,7 @@ interface Configuration {
     isEvaluated: boolean;
     lmsData: LMSData;
     design: Design; // see https://github.com/chemmedia/knowledgeworker-embedded-asset-api-ui
-    context: Context;
+    context: Context[];
 }
 ```
 
