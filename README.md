@@ -21,7 +21,7 @@ If you are starting from scratch, we highly recommend to fork one of our example
 To install the API library, use your preferred package manager, e.g.
 
 ```sh
-$ pnmp install knowledgeworker-embedded-asset-api
+$ pnpm install knowledgeworker-embedded-asset-api
 ```
 
 ## Usage
