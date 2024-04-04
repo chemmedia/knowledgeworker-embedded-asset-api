@@ -21,7 +21,7 @@ If you are starting from scratch, we highly recommend to fork one of our example
 To install the API library, use your preferred package manager, e.g.
 
 ```sh
-$ yarn add knowledgeworker-embedded-asset-api
+$ pnmp install knowledgeworker-embedded-asset-api
 ```
 
 ## Usage
@@ -372,7 +372,7 @@ To use native-looking Knowledgeworker Create UI elements in your rich content pa
 See docs there on how to use it.
 
 ## Deprecation
-Version 1 of knowledgeworker-embedded-asset-api is now deprecated but will be supported until end of 2022.
+Version 2 of knowledgeworker-embedded-asset-api is now deprecated but will be supported until end of 2024.
 
 ## Versioning
 
