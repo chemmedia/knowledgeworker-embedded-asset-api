@@ -1,6 +1,6 @@
 {
   "name": "knowledgeworker-embedded-asset-api",
-  "version": "3.0.0-rc.1",
+  "version": "3.0.0-rc.2",
   "author": "chemmedia AG",
   "description": "A javascript library to integrate rich content packages into responsive Knowledgeworker Create contents.",
   "keywords": [
@@ -27,7 +27,7 @@
     "prepare": "pnpm build"
   },
   "dependencies": {
-    "knowledgeworker-embedded-asset-api-ui": "^1.0.0"
+    "knowledgeworker-embedded-asset-api-ui": "^2.0.0-rc.0"
   },
   "devDependencies": {
     "typescript": "^5.4.3",
