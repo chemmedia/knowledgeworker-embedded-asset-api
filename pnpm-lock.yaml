@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   knowledgeworker-embedded-asset-api-ui:
-    specifier: ^2.0.0-rc.0
-    version: 2.0.0-rc.0
+    specifier: ^2.0.0-rc.1
+    version: 2.0.0-rc.1
 
 devDependencies:
   typescript:
@@ -728,8 +728,8 @@ packages:
       graceful-fs: 4.2.11
     dev: true
 
-  /knowledgeworker-embedded-asset-api-ui@2.0.0-rc.0:
-    resolution: {integrity: sha512-B8PyIwHTmVA2UIvRpE9KvLYWMHIq4NUKP2OeELHQKx/NQKfE5axOmg79GsFfEBYalbSvPmIt4/Kqc3oyadzlug==}
+  /knowledgeworker-embedded-asset-api-ui@2.0.0-rc.1:
+    resolution: {integrity: sha512-YiGHr9gKWeZ1vW78+qL3h6iLIbKoMsHzZI6Thp9iO9BtUS+Y7/SA4XVc+lHae4LcUmHleDXR6mS5wYxUh+kpwg==}
     engines: {node: '>=18'}
     dev: false
 
