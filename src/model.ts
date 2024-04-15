@@ -49,6 +49,7 @@ export interface LMSData {
 export enum ContextType {
     MEDIUM = 'medium',
     QUESTION = 'question',
+    ASSESSMENT= 'assessment',
     SECTION = 'section',
     CONTENT = 'content',
     CHAPTER = 'chapter',
