@@ -27,7 +27,7 @@
     "prepare": "pnpm build"
   },
   "dependencies": {
-    "knowledgeworker-embedded-asset-api-ui": "^2.0.0-rc.1"
+    "knowledgeworker-embedded-asset-api-ui": "^2.0.0"
   },
   "devDependencies": {
     "@types/node": "^18.19.31",
