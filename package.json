@@ -1,31 +1,41 @@
 {
   "name": "knowledgeworker-embedded-asset-api",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "author": "chemmedia AG",
   "description": "A javascript library to integrate rich content packages into responsive Knowledgeworker Create contents.",
   "keywords": [
     "knowledgeworker"
   ],
-  "scripts": {
-    "build": "tsc",
-    "prepare": "yarn run build"
-  },
   "homepage": "https://knowledgeworker.com",
   "bugs": "https://github.com/chemmedia/knowledgeworker-embedded-asset-api/issues",
   "license": "LGPL-3.0",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/chemmedia/knowledgeworker-embedded-asset-api.git"
   },
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js"
+  },
   "files": [
-    "lib/**/*"
+    "dist/**/*"
   ],
-  "devDependencies": {
-    "typescript": "^4.7.2"
+  "scripts": {
+    "build": "tsc && vite build",
+    "prepare": "pnpm build"
   },
   "dependencies": {
-    "knowledgeworker-embedded-asset-api-ui": "^1.0.0"
+    "knowledgeworker-embedded-asset-api-ui": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.19.31",
+    "typescript": "^5.4.3",
+    "vite": "^5.2.8",
+    "vite-plugin-dts": "^3.8.1"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }

@@ -26,3 +26,4 @@ export {
     onSharedDataChanged,
 } from './listeners';
 export * from './model';
+import './dev';
