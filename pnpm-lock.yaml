@@ -4,16 +4,13 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  knowledgeworker-embedded-asset-api-ui: file:../knowledgeworker-embedded-asset-api-ui
-
 importers:
 
   .:
     dependencies:
       knowledgeworker-embedded-asset-api-ui:
-        specifier: file:../knowledgeworker-embedded-asset-api-ui
-        version: file:../knowledgeworker-embedded-asset-api-ui
+        specifier: ^2.1.0
+        version: 2.1.0
     devDependencies:
       '@types/node':
         specifier: ^18.19.31
@@ -441,8 +438,8 @@ packages:
   jsonfile@4.0.0:
     resolution: {integrity: sha512-m6F1R3z8jjlf2imQHS2Qez5sjKWQzbuuhuJ/FKYFRZvPE3PuHcSMVZzfsLhGVOkfd20obL5SWEBew5ShlquNxg==}
 
-  knowledgeworker-embedded-asset-api-ui@file:../knowledgeworker-embedded-asset-api-ui:
-    resolution: {directory: ../knowledgeworker-embedded-asset-api-ui, type: directory}
+  knowledgeworker-embedded-asset-api-ui@2.1.0:
+    resolution: {integrity: sha512-pxd6V8VOHkfSXB0h6xM+fSX/cZUQ+AhS4s1mMZT5m3QuaF7Rfvs8OnThU43wQ4DenXm38T9sGP93mfsrIIhMBQ==}
     engines: {node: '>=18'}
 
   kolorist@1.8.0:
@@ -994,7 +991,7 @@ snapshots:
     optionalDependencies:
       graceful-fs: 4.2.11
 
-  knowledgeworker-embedded-asset-api-ui@file:../knowledgeworker-embedded-asset-api-ui: {}
+  knowledgeworker-embedded-asset-api-ui@2.1.0: {}
 
   kolorist@1.8.0: {}
 
