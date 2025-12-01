@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       knowledgeworker-embedded-asset-api-ui:
-        specifier: ^2.1.1
-        version: 2.1.1
+        specifier: ^3.0.0
+        version: 3.0.0
     devDependencies:
       '@types/node':
         specifier: ^22.19.1
@@ -557,9 +557,9 @@ packages:
   jsonfile@6.2.0:
     resolution: {integrity: sha512-FGuPw30AdOIUTRMC2OMRtQV+jkVj2cfPqSeWXv1NEAJ1qZ5zb1X6z1mFhbfOB/iy3ssJCD+3KuZ8r8C3uVFlAg==}
 
-  knowledgeworker-embedded-asset-api-ui@2.1.1:
-    resolution: {integrity: sha512-IC44BPyf2frCx1v5arEVDmTErmY68pVBUWx84Jn7WQwc9XXZ73ijdFsp7WAIj8AdnwYSopRFdK3squ33PwvI8w==}
-    engines: {node: '>=18'}
+  knowledgeworker-embedded-asset-api-ui@3.0.0:
+    resolution: {integrity: sha512-gWaRfCzleVTYZglLQCajsuG4rtc0/YnRj8GV2oaP5uz4Ly5/Nv/HRFqr/7Gg77hO/b5nFRkVGzxRVZiW0R81bQ==}
+    engines: {node: '>=20'}
 
   kolorist@1.8.0:
     resolution: {integrity: sha512-Y+60/zizpJ3HRH8DCss+q95yr6145JXZo46OTpFvDZWLfRCE4qChOyk1b26nMaNpfHHgxagk9dXT5OP0Tfe+dQ==}
@@ -1192,7 +1192,7 @@ snapshots:
     optionalDependencies:
       graceful-fs: 4.2.11
 
-  knowledgeworker-embedded-asset-api-ui@2.1.1: {}
+  knowledgeworker-embedded-asset-api-ui@3.0.0: {}
 
   kolorist@1.8.0: {}
 
