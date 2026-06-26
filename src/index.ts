@@ -4,6 +4,7 @@ export {
     setSuspendData,
     setSharedData,
     completed,
+    navigate,
     checkAnswerButtonClicked,
     solutionButtonClicked,
     retryButtonClicked,

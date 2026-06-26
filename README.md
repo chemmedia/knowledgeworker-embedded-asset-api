@@ -177,6 +177,17 @@ import { checkAnswerButtonClicked } from 'knowledgeworker-embedded-asset-api';
 myAnswerButton.addEventListener("click", () => checkAnswerButtonClicked());
 ```
 
+### `navigate(target: string): void`
+
+Requests the Knowledgeworker Create runtime to navigate to an internal course location. The `target` is an internal hash that identifies a specific location within the course. You can copy it from the view address bar in Knowledgeworker Create, e.g. `#/1-lernziel/1-sco/1-section` or `#/goto=<uid>`.
+
+```TypeScript
+import { navigate } from 'knowledgeworker-embedded-asset-api';
+
+// Navigate to a specific course location
+navigate('#/1-lernziel/1-sco/1-section');
+```
+
 ### `message(message: Message): void`
 If you need additional custom behaviour, a customization of the responsive layout engine in Knowledgeworker Create is needed. Please contact [Knowledgeworker Create Support](https://support.chemmedia.de/). If necessary, we will then ask you to send additional data via the `message` action.
 
