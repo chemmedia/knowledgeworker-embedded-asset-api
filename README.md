@@ -179,14 +179,54 @@ myAnswerButton.addEventListener("click", () => checkAnswerButtonClicked());
 
 ### `navigate(target: string): void`
 
-Requests the Knowledgeworker Create runtime to navigate to an internal course location. The `target` is an internal hash that identifies a specific location within the course. You can copy it from the view address bar in Knowledgeworker Create, e.g. `#/1-lernziel/1-sco/1-section` or `#/goto=<uid>`.
+Requests the Knowledgeworker Create runtime to navigate to a specific location within the current course or content.
+
+The `target` parameter is a routing path that identifies a location within the course. It must include the leading `#`. The easiest way to obtain a routing path is to copy it from the address bar while viewing the desired location in Knowledgeworker Create, e.g. `#/1-my-chapter/1-my-content/1-my-section` or `#/goto=<uid>`.
+
+Example:
 
 ```TypeScript
 import { navigate } from 'knowledgeworker-embedded-asset-api';
 
-// Navigate to a specific course location
-navigate('#/1-lernziel/1-sco/1-section');
+// Navigate to a specific section
+navigate('#/1-my-chapter/1-my-content/1-my-section');
 ```
+
+#### Understanding the routing path
+
+A routing path mirrors the structure of the course. For courses, it always starts with a chapter — the depth of the path determines whether navigation targets a chapter, a content or a section:
+
+```
+#/<chapter>
+#/<chapter>/<content>
+#/<chapter>/<content>/<section>
+```
+
+For single contents (contents published on their own, without a surrounding course), there is no chapter level, so the routing path starts with the content:
+
+```
+#/<content>
+#/<content>/<section>
+```
+
+Each path segment consists of a numeric identifier and an optional textual part, e.g. `1-my-chapter`. Only the numeric identifiers are used to resolve the route. The textual parts (such as `my-chapter` or `my-section`) exist for readability and SEO purposes only and are ignored during route resolution. A routing path may therefore consist of numeric identifiers only:
+
+```TypeScript
+// Same target as '#/1-my-chapter/1-my-content/1-my-section'
+navigate('#/1/1/1');
+```
+
+This short form is particularly useful for internationalized contents, where the textual segments may vary between languages, or for assets that are reused in multiple courses.
+
+#### Unresolvable targets
+
+Embedded assets can be reused in different courses and contents, so a given target may not exist or may not be reachable everywhere the asset is used. Navigation requests are silently ignored if the target
+
+* is invalid,
+* does not exist in the current course or content, e.g. because the asset is reused in a course with a different structure, or
+* is currently unavailable, e.g. because it is locked due to unmet learning prerequisites.
+
+In all of these cases no error is reported and the current course location remains unchanged.
 
 ### `message(message: Message): void`
 If you need additional custom behaviour, a customization of the responsive layout engine in Knowledgeworker Create is needed. Please contact [Knowledgeworker Create Support](https://support.chemmedia.de/). If necessary, we will then ask you to send additional data via the `message` action.
