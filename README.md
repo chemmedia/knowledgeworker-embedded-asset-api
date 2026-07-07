@@ -194,7 +194,7 @@ navigate('#/1-my-chapter/1-my-content/1-my-section');
 
 #### Understanding the routing path
 
-A routing path mirrors the structure of the course. For courses, it always starts with a chapter — the depth of the path determines whether navigation targets a chapter, a content or a section:
+A routing path mirrors the structure of the course. For courses, it always starts with a chapter. The depth of the path determines whether navigation targets a chapter, a content or a section:
 
 ```
 #/<chapter>
@@ -202,7 +202,7 @@ A routing path mirrors the structure of the course. For courses, it always start
 #/<chapter>/<content>/<section>
 ```
 
-For single contents (contents published on their own, without a surrounding course), there is no chapter level, so the routing path starts with the content:
+For standalone content that is not part of a course, there is no chapter level, so the routing path starts with the content:
 
 ```
 #/<content>
@@ -220,11 +220,11 @@ This short form is particularly useful for internationalized contents, where the
 
 #### Unresolvable targets
 
-Embedded assets can be reused in different courses and contents, so a given target may not exist or may not be reachable everywhere the asset is used. Navigation requests are silently ignored if the target
+Embedded assets can be reused in different courses and contents. As a result, a given navigation target may not exist or may not be reachable everywhere the asset is used. Navigation requests are silently ignored if the target:
 
 * is invalid,
-* does not exist in the current course or content, e.g. because the asset is reused in a course with a different structure, or
-* is currently unavailable, e.g. because it is locked due to unmet learning prerequisites.
+* does not exist in the current course or content, for example because the asset is reused in a course with a different structure, or
+* is currently unavailable, for example because it is locked due to unmet learning prerequisites.
 
 In all of these cases no error is reported and the current course location remains unchanged.
 
