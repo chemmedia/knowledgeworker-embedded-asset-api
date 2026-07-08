@@ -63,6 +63,14 @@ export const configure = (options: Options) => {
     sendMessage(PackageAction.CONFIGURE, { options });
 };
 
+export const navigate = (target: string) => {
+    if (typeof target !== 'string' || target.trim() === '') {
+        throw Error('Target should be a non-empty string!');
+    }
+
+    sendMessage(PackageAction.NAVIGATE, { target });
+};
+
 export const completed = () => sendMessage(PackageAction.SET_COMPLETE, { complete: true });
 export const checkAnswerButtonClicked = () => sendMessage(PackageAction.CHECK_ANSWER_BUTTON_CLICKED);
 export const solutionButtonClicked = () => sendMessage(PackageAction.SOLUTION_BUTTON_CLICKED);

@@ -33,6 +33,7 @@ export enum PackageAction {
     SET_DESIGN = 'KW_PACKAGE_SET_DESIGN',
     DEACTIVATE = 'KW_PACKAGE_DEACTIVATE',
     RESET = 'KW_PACKAGE_RESET',
+    NAVIGATE = 'KW_PACKAGE_NAVIGATE',
 }
 
 export enum AssetType {
